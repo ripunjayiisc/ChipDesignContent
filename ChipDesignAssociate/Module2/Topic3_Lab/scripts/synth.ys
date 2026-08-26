@@ -1,0 +1,31 @@
+# ---------------------------------------------------------------------------
+# synth.ys  -  Yosys script for Topic 3, Tutorial T4
+#
+#   yosys -s scripts/synth.ys
+#
+# Reads the 1011 FSM, synthesises it, and prints the cell statistics.
+# WHAT TO CHECK in the stat output:
+#   * 3 DFF cells      -> your 3-bit state register
+#   * a handful of combinational cells
+#   * ZERO $_DLATCH_   -> if a latch appears, a default assignment is missing
+# ---------------------------------------------------------------------------
+read_verilog rtl/seq_detect_1011.v
+
+# elaborate, then look at the FSM before optimisation
+hierarchy -check -top seq_detect_1011
+proc
+opt
+
+# extract and report the state machine
+fsm_detect
+fsm_extract
+fsm_info
+fsm_map
+
+# full synthesis and technology mapping to generic gates
+synth -top seq_detect_1011
+abc -g AND,OR,XOR,NAND,NOR
+
+# report and write out
+stat
+write_verilog -noattr build/seq_detect_1011_netlist.v

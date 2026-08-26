@@ -5,11 +5,21 @@ from wbkit import *
 from t4_wb1 import B, N, I, M
 
 
+def _paras(body):
+    """Normalise a body argument into a list of paragraphs.
+
+    A paragraph is a str or a list of runs. A bare run — the (text, attrs)
+    tuple returned by B/N/I/M — is wrapped so it becomes its own paragraph.
+    """
+    if isinstance(body, str) or isinstance(body, tuple):
+        body = [body]
+    return [[b] if isinstance(b, tuple) else b for b in body]
+
+
 def ex(w, n, title, body=None, code=None, size=8.8):
     w.h4("Exercise %d · %s" % (n, title))
     if body:
-        if isinstance(body, str):
-            body = [body]
+        body = _paras(body)
         for b in body:
             w.para(b)
     if code:
@@ -22,8 +32,7 @@ def sol(w, n, body=None, code=None, size=8.8):
     r = p.add_run("Solution %d" % n)
     r.font.name = HEADF; r.font.size = Pt(10.5); r.font.bold = True; r.font.color.rgb = GREEN
     if body:
-        if isinstance(body, str):
-            body = [body]
+        body = _paras(body)
         for b in body:
             w.para(b)
     if code:

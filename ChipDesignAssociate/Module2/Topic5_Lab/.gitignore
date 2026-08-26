@@ -1,0 +1,12 @@
+build/
+obj_dir/
+*.vcd
+*.vvp
+*.out
+*.jou
+*.log
+*.wlf
+xsim.dir/
+.Xil/
+work/
+transcript

@@ -1,0 +1,53 @@
+[*] GTKWave save file for Topic 5, Lab V3.
+[*] Open with:   gtkwave v3.vcd wave/v3_fifo.gtkw
+[*]
+[*] A save file records which signals are shown, in what order, at what radix,
+[*] with which dividers. Build the view once, save it (File > Write Save File),
+[*] commit it, and every person who opens that VCD sees the same picture. It is
+[*] the difference between "look at the waveform" and "look at THIS waveform".
+[dumpfile] "v3.vcd"
+[savefile] "wave/v3_fifo.gtkw"
+[timestart] 0
+[size] 1600 900
+[pos] -1 -1
+*-16.0 -1 -1 -1 -1 -1 -1 -1
+[treeopen] tb_v3_random.
+[treeopen] tb_v3_random.u_dut.
+[sst_width] 260
+[signals_width] 250
+[sst_expanded] 1
+[sst_vpaned_height] 300
+@800200
+-clock and reset
+@28
+tb_v3_random.clk
+tb_v3_random.rst_n
+@800200
+-stimulus into the DUT
+@28
+tb_v3_random.wr_en
+@22
+tb_v3_random.wr_data[7:0]
+@28
+tb_v3_random.rd_en
+@800200
+-what the DUT reports
+@22
+tb_v3_random.rd_data[7:0]
+@28
+tb_v3_random.full
+tb_v3_random.empty
+@22
+tb_v3_random.count[3:0]
+@800200
+-the model, for comparison
+@22
+tb_v3_random.mhead[31:0]
+tb_v3_random.mtail[31:0]
+@800200
+-inside the DUT - white box, for debugging only
+@22
+tb_v3_random.u_dut.wr_ptr[3:0]
+tb_v3_random.u_dut.rd_ptr[3:0]
+[pattern_trace] 1
+[pattern_trace] 0

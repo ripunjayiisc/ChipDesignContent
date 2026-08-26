@@ -1,0 +1,10 @@
+build/
+*.vcd
+*.out
+*.jou
+*.log
+xsim.dir/
+.Xil/
+work/
+transcript
+vsim.wlf

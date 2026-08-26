@@ -45,7 +45,8 @@ MW       = 11247120                   # content width
 TOP      = 1143000                    # first content row
 BOTTOM   = 6415000                    # last usable y (footer sits below)
 FOOT_Y   = 6547104
-IMG_DIR  = os.path.join(os.path.dirname(os.path.abspath(__file__)), "img")
+IMG_DIR  = os.environ.get("CDA_IMG_DIR",
+                          os.path.join(os.path.dirname(os.path.abspath(__file__)), "img"))
 
 
 def _norm(v):
@@ -238,7 +239,7 @@ class Deck:
         return y
 
     def image(self, sld, y, name, h, w=None, x=None):
-        p = os.path.join(IMG_DIR, name + ".png")
+        p = os.path.join(os.environ.get("CDA_IMG_DIR", IMG_DIR), name + ".png")
         iw, ih = Image.open(p).size
         ar = iw / ih
         if w is None:

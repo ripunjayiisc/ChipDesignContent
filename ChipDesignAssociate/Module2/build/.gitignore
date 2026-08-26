@@ -1,3 +1,5 @@
 # Generated artefacts — rebuild with the scripts in this folder
 img/
 __pycache__/
+topic4/img/
+topic4/__pycache__/

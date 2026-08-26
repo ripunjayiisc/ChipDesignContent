@@ -23,7 +23,8 @@ SLATE  = RGBColor(0x5A, 0x6B, 0x7B)
 WHITE  = RGBColor(0xFF, 0xFF, 0xFF)
 
 HEADF, BODYF, MONOF = "Georgia", "Calibri", "Consolas"
-IMG = os.path.join(os.path.dirname(os.path.abspath(__file__)), "img")
+IMG = os.environ.get("CDA_IMG_DIR",
+                     os.path.join(os.path.dirname(os.path.abspath(__file__)), "img"))
 
 
 def _sub(parent, tag, **attrs):
@@ -74,7 +75,10 @@ def left_bar(cell, color):
 
 
 class Workbook:
-    def __init__(self):
+    def __init__(self, footer=None):
+        self.footer_text = footer or (
+            "Module 2 · Topic 3 · Digital Logic Design Principles   ·   "
+            "Chip Design Associate (O-Level ‘Chip Design’)   ·   NIE/ELE/N0102")
         self.d = Document()
         sec = self.d.sections[0]
         sec.page_width, sec.page_height = Inches(8.5), Inches(11)
@@ -117,8 +121,7 @@ class Workbook:
         f = self.d.sections[0].footer
         p = f.paragraphs[0]
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        r = p.add_run("Module 2 · Topic 3 · Digital Logic Design Principles   ·   "
-                      "Chip Design Associate (O-Level ‘Chip Design’)   ·   NIE/ELE/N0102")
+        r = p.add_run(self.footer_text)
         r.font.size = Pt(7.5)
         r.font.color.rgb = SLATE
         r.font.name = BODYF
@@ -280,7 +283,8 @@ class Workbook:
         return t
 
     def image(self, name, width=6.6, caption=None):
-        self.d.add_picture(os.path.join(IMG, name + ".png"), width=Inches(width))
+        self.d.add_picture(os.path.join(os.environ.get("CDA_IMG_DIR", IMG),
+                                        name + ".png"), width=Inches(width))
         self.d.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
         if caption:
             p = self.d.add_paragraph()

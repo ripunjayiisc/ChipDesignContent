@@ -23,7 +23,8 @@ LIGHT  = "#F4F8FB"
 GRID   = "#D8DEE5"
 WHITE  = "#FFFFFF"
 
-OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "img")
+OUT = os.environ.get("CDA_IMG_DIR",
+                     os.path.join(os.path.dirname(os.path.abspath(__file__)), "img"))
 os.makedirs(OUT, exist_ok=True)
 
 plt.rcParams["font.family"] = "DejaVu Sans"

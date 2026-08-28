@@ -1,0 +1,191 @@
+/* ---------------------------------------------------------------------------
+ * cda_edu.lib  -  a small, FICTIONAL standard-cell library in Liberty format.
+ *
+ * This is the file a static timing analyser reads to find out how long each
+ * gate takes. Real libraries from a foundry have the same structure and are
+ * tens of megabytes: hundreds of cells, several drive strengths each, and
+ * 2-D delay tables indexed by input slew and output load. This one has one
+ * drive strength per function and a straight-line delay model, so that you
+ * can read it, and so that every number in the lab can be checked by hand.
+ *
+ *     delay = intrinsic + load_factor * (fanout load)
+ *
+ * All times are nanoseconds; capacitance is in "unit loads", where one unit
+ * load is the input capacitance of one gate pin.
+ *
+ * The numbers are chosen to be plausible for a mature ~65 nm process at
+ * nominal voltage and temperature. They are NOT any real vendor's data.
+ * ------------------------------------------------------------------------ */
+
+library (cda_edu) {
+  technology (cmos);
+  delay_model              : table_lookup;
+  time_unit                : "1ns";
+  capacitive_load_unit     (1, pf);
+  voltage_unit             : "1V";
+  nom_voltage              : 1.20;
+  nom_temperature          : 25.0;
+  nom_process              : 1.0;
+
+  /* ---- combinational cells -------------------------------------------
+   * cda_intrinsic  : delay with no load at all, in ns
+   * cda_load_factor: extra ns per unit of output load
+   * cda_input_cap  : load this cell presents on each of its inputs
+   */
+
+  cell (INV) {            /* $_NOT_ */
+    area : 1.0;
+    cda_intrinsic   : 0.021;
+    cda_load_factor : 0.012;
+    cda_input_cap   : 1.0;
+    pin (A) { direction : input;  }
+    pin (Y) { direction : output; function : "A'"; }
+  }
+
+  cell (BUF) {            /* used by the hold-fix exercise */
+    area : 1.5;
+    cda_intrinsic   : 0.034;
+    cda_load_factor : 0.011;
+    cda_input_cap   : 1.0;
+    pin (A) { direction : input;  }
+    pin (Y) { direction : output; function : "A"; }
+  }
+
+  cell (NAND2) {          /* $_NAND_ */
+    area : 2.0;
+    cda_intrinsic   : 0.032;
+    cda_load_factor : 0.014;
+    cda_input_cap   : 1.2;
+    pin (A) { direction : input;  }
+    pin (B) { direction : input;  }
+    pin (Y) { direction : output; function : "(A B)'"; }
+  }
+
+  cell (NOR2) {           /* $_NOR_ */
+    area : 2.0;
+    cda_intrinsic   : 0.036;
+    cda_load_factor : 0.017;
+    cda_input_cap   : 1.2;
+    pin (A) { direction : input;  }
+    pin (B) { direction : input;  }
+    pin (Y) { direction : output; function : "(A+B)'"; }
+  }
+
+  cell (AND2) {           /* $_AND_  - a NAND2 followed by an INV */
+    area : 2.5;
+    cda_intrinsic   : 0.053;
+    cda_load_factor : 0.012;
+    cda_input_cap   : 1.2;
+    pin (A) { direction : input;  }
+    pin (B) { direction : input;  }
+    pin (Y) { direction : output; function : "(A B)"; }
+  }
+
+  cell (OR2) {            /* $_OR_ */
+    area : 2.5;
+    cda_intrinsic   : 0.057;
+    cda_load_factor : 0.012;
+    cda_input_cap   : 1.2;
+    pin (A) { direction : input;  }
+    pin (B) { direction : input;  }
+    pin (Y) { direction : output; function : "(A+B)"; }
+  }
+
+  cell (ANDNOT2) {        /* $_ANDNOT_  : A & !B */
+    area : 2.5;
+    cda_intrinsic   : 0.048;
+    cda_load_factor : 0.013;
+    cda_input_cap   : 1.2;
+    pin (A) { direction : input;  }
+    pin (B) { direction : input;  }
+    pin (Y) { direction : output; function : "(A B')"; }
+  }
+
+  cell (ORNOT2) {         /* $_ORNOT_   : A | !B */
+    area : 2.5;
+    cda_intrinsic   : 0.052;
+    cda_load_factor : 0.013;
+    cda_input_cap   : 1.2;
+    pin (A) { direction : input;  }
+    pin (B) { direction : input;  }
+    pin (Y) { direction : output; function : "(A+B')"; }
+  }
+
+  cell (XOR2) {           /* $_XOR_  - the expensive one, and the reason
+                             ripple-carry adders are slow */
+    area : 4.0;
+    cda_intrinsic   : 0.088;
+    cda_load_factor : 0.018;
+    cda_input_cap   : 1.5;
+    pin (A) { direction : input;  }
+    pin (B) { direction : input;  }
+    pin (Y) { direction : output; function : "(A^B)"; }
+  }
+
+  cell (XNOR2) {          /* $_XNOR_ */
+    area : 4.0;
+    cda_intrinsic   : 0.091;
+    cda_load_factor : 0.018;
+    cda_input_cap   : 1.5;
+    pin (A) { direction : input;  }
+    pin (B) { direction : input;  }
+    pin (Y) { direction : output; function : "(A^B)'"; }
+  }
+
+  cell (MUX2) {           /* $_MUX_  : S ? B : A */
+    area : 3.5;
+    cda_intrinsic   : 0.075;
+    cda_load_factor : 0.015;
+    cda_input_cap   : 1.4;
+    pin (A) { direction : input;  }
+    pin (B) { direction : input;  }
+    pin (S) { direction : input;  }
+    pin (Y) { direction : output; function : "(S B) + (S' A)"; }
+  }
+
+  /* ---- sequential cell -------------------------------------------------
+   * cda_clk_to_q : propagation delay from the active clock edge to Q
+   * cda_setup    : data must be stable this long BEFORE the edge
+   * cda_hold     : data must stay stable this long AFTER the edge
+   */
+
+  cell (DFF) {            /* $_DFF_P_ */
+    area : 8.0;
+    ff (IQ, IQN) { clocked_on : "C"; next_state : "D"; }
+    cda_clk_to_q    : 0.145;
+    cda_load_factor : 0.013;
+    cda_setup       : 0.090;
+    cda_hold        : 0.035;
+    cda_input_cap   : 1.6;
+    pin (C) { direction : input; clock : true; }
+    pin (D) { direction : input;  }
+    pin (Q) { direction : output; function : "IQ"; }
+  }
+
+  cell (DFFR) {           /* $_DFF_PN0_ : async active-low reset */
+    area : 9.5;
+    ff (IQ, IQN) { clocked_on : "C"; next_state : "D"; clear : "R'"; }
+    cda_clk_to_q    : 0.152;
+    cda_load_factor : 0.013;
+    cda_setup       : 0.095;
+    cda_hold        : 0.038;
+    cda_input_cap   : 1.6;
+    pin (C) { direction : input; clock : true; }
+    pin (R) { direction : input;  }
+    pin (D) { direction : input;  }
+    pin (Q) { direction : output; function : "IQ"; }
+  }
+
+  cell (DFFE) {           /* $_DFFE_PP_ : clock enable */
+    area : 10.0;
+    cda_clk_to_q    : 0.150;
+    cda_load_factor : 0.013;
+    cda_setup       : 0.092;
+    cda_hold        : 0.036;
+    cda_input_cap   : 1.6;
+    pin (C) { direction : input; clock : true; }
+    pin (E) { direction : input;  }
+    pin (D) { direction : input;  }
+    pin (Q) { direction : output; function : "IQ"; }
+  }
+}

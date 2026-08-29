@@ -26,9 +26,9 @@ def build(d):
 
     # =============================================== datapath + controller
     s = d.slide("3.1 · THE SPLIT", "Datapath and Controller")
-    y = d.image(s, TOP - 45720, "datapath_controller", 5029200)
+    y = d.image(s, TOP - 45720, "datapath_controller", 4950000)
     d.lead(s, y + G, [[R("A UART, a cache, a GPU. Different sizes, the same two "
-                         "halves.", b=True, c=NAVY, s=10.5)]], h=228600)
+                         "halves.", b=True, c=NAVY, s=12.0)]], h=228600)
 
     s = d.slide("3.1 · THE SPLIT", "The Worked Example: Accumulate N Samples")
     y = d.code(s, TOP, [
@@ -46,7 +46,7 @@ def build(d):
         "always @(posedge clk or negedge rst_n)",
         "    if      (!rst_n)  sum <= 0;",
         "    else if (acc_clr) sum <= 0;",
-        "    else if (acc_en)  sum <= sum + data;"], size=9.5)
+        "    else if (acc_en)  sum <= sum + data;"], size=11.2)
 
     d.card(s, y + G, "Read the interface between them",
            [[R("Four control wires down, one status wire up. That is the entire "
@@ -75,18 +75,18 @@ def build(d):
                accent=GREEN, fill=CARD_G, h=1097280)
 
     d.lead(s, y + G, [[R("make dpctrl  prints every control signal on every cycle, "
-                         "next to the accumulated sum.", s=10.5)]], h=228600)
+                         "next to the accumulated sum.", s=12.0)]], h=228600)
 
     # ============================================================== the FSM
     s = d.slide("3.2 · THE FSM", "The Three-Block Coding Pattern")
-    y = d.image(s, TOP - 45720, "fsm_pattern", 5029200)
+    y = d.image(s, TOP - 45720, "fsm_pattern", 4950000)
     d.lead(s, y + G, [[R("Every state machine in this lab is written exactly like "
-                         "this. So is most industrial RTL.", s=10.5)]], h=228600)
+                         "this. So is most industrial RTL.", s=12.0)]], h=228600)
 
     s = d.slide("3.2 · THE FSM", "Why Not One Block?")
     y = d.lead(s, TOP, [[R("You can write a working state machine in a single "
                            "clocked block, with the case statement inside it. "
-                           "Nothing about it is illegal.", s=11)]], h=274320)
+                           "Nothing about it is illegal.", s=12.0)]], h=274320)
 
     y = d.table(s, y + G,
                 ["", "one block", "three blocks"],
@@ -101,11 +101,11 @@ def build(d):
                   "blocks 2 and 3 have no timing to re-read"],
                  ["adding a state", "one place, easy to miss a branch",
                   "two places, both of them a case statement"]],
-                [2743200, 4114800, 4389120], rh=274320, bold_cols=(0,), size=9.5)
+                [2743200, 4114800, 4389120], rh=310896, bold_cols=(0,), size=11.2)
 
     d.lead(s, y + G, [[R("One block is not wrong. Three blocks are easier to be "
                          "right in, which over a project is the same thing.",
-                         b=True, c=NAVY, s=10.5)]], h=274320)
+                         b=True, c=NAVY, s=12.0)]], h=274320)
 
     s = d.slide("3.2 · THE FSM", "The Default Assignment, and Why It Matters",
                 accent=GREEN)
@@ -122,7 +122,7 @@ def build(d):
         "// Not one of those if statements has an else.  Not one of them needs",
         "// one: next_state was already written, unconditionally, on line 2.",
         "// No path through this block leaves it unassigned, so no latch."],
-        size=9.5)
+        size=11.2)
 
     d.card(s, y + G, "This is the idiom the lab linter had to learn",
            [[R("A naive latch rule flags every one of those if statements. Yosys "
@@ -134,27 +134,32 @@ def build(d):
 
     # ========================================================= Moore/Mealy
     s = d.slide("3.3 · MOORE AND MEALY", "Where the Output Comes From")
-    y = d.image(s, TOP - 45720, "moore_mealy", 5029200)
+    y = d.image(s, TOP - 45720, "moore_mealy", 4950000)
     d.lead(s, y + G, [[R("One structural difference — whether the output logic can "
-                         "see the input. Everything else follows.", s=10.5)]],
+                         "see the input. Everything else follows.", s=12.0)]],
            h=228600)
 
+    s = d.slide("3.3 · MOORE AND MEALY", "The Differences, In One Table")
+    y = d.image(s, TOP - 45720, "moore_mealy_table", 4950000)
+    d.lead(s, y + G, [[R("Five rows. The last one is measured, not assumed.",
+                         s=12.0)]], h=228600)
+
     s = d.slide("3.3 · MOORE AND MEALY", "The '101' Detector, Moore")
-    y = d.image(s, TOP - 45720, "seq101_moore_states", 4937760)
+    y = d.image(s, TOP - 45720, "seq101_moore_states", 4950000)
     d.lead(s, y + G, [[R("Four states. The output is decoded from the state "
-                         "register alone.", s=10.5)]], h=228600)
+                         "register alone.", s=12.0)]], h=228600)
 
     s = d.slide("3.3 · MOORE AND MEALY", "The Same Detector, Mealy")
-    y = d.image(s, TOP - 45720, "seq101_mealy_states", 4937760)
+    y = d.image(s, TOP - 45720, "seq101_mealy_states", 4950000)
     d.lead(s, y + G, [[R("Three states. The output is written on the arrows, as "
-                         "input / output.", s=10.5)]], h=228600)
+                         "input / output.", s=12.0)]], h=228600)
 
     s = d.slide("3.3 · MOORE AND MEALY", "The One-Cycle Difference, Measured",
                 accent=AMBER)
-    y = d.image(s, TOP - 45720, "moore_mealy_timing", 5029200)
+    y = d.image(s, TOP - 45720, "moore_mealy_timing", 4950000)
     d.lead(s, y + G, [[R("Five matches, zero mismatches against a golden model "
                          "computed from the stream itself.", b=True, c=GREEN,
-                         s=10.5)]], h=228600)
+                         s=12.0)]], h=228600)
 
     s = d.slide("3.3 · MOORE AND MEALY", "Choosing Between Them")
     y = d.tiers(s, TOP, [
@@ -183,16 +188,21 @@ def build(d):
 
     # ============================================================ encoding
     s = d.slide("3.4 · ENCODING", "The Choice You Make By Typing Numbers")
-    y = d.image(s, TOP - 45720, "state_encoding", 5029200)
+    y = d.image(s, TOP - 45720, "state_encoding", 4950000)
     d.lead(s, y + G, [[R("Same behaviour, different hardware — and the direction of "
                          "the difference is not the one usually quoted.",
-                         b=True, c=RED, s=10.5)]], h=228600)
+                         b=True, c=RED, s=12.0)]], h=228600)
+
+    s = d.slide("3.4 · ENCODING", "Which Encoding, and When")
+    y = d.image(s, TOP - 45720, "state_encoding_choice", 4950000)
+    d.lead(s, y + G, [[R("Three encodings, three different reasons. None of them "
+                         "is a default.", s=12.0)]], h=228600)
 
     # =========================================================== the timer
     s = d.slide("3.5 · A CONTROLLER WITH A TIMER", "The Traffic Light")
-    y = d.image(s, TOP - 45720, "traffic_states", 5029200)
+    y = d.image(s, TOP - 45720, "traffic_states", 4950000)
     d.lead(s, y + G, [[R("Two safety properties, checked on every one of forty "
-                         "cycles. Zero violations.", b=True, c=GREEN, s=10.5)]],
+                         "cycles. Zero violations.", b=True, c=GREEN, s=12.0)]],
            h=228600)
 
     s = d.slide("3.5 · A CONTROLLER WITH A TIMER", "Checking a Property Instead of "
@@ -208,7 +218,7 @@ def build(d):
         "if (prev_main == GREEN && main_light == RED) begin",
         "    $display(\"*** P2 VIOLATED at cycle %0d\", cycles);",
         "    errors = errors + 1;",
-        "end"], size=9.5)
+        "end"], size=11.2)
 
     y = d.card(s, y + G, "You write the rule once; the simulator tests it every "
                "cycle of every run",
@@ -220,13 +230,13 @@ def build(d):
 
     d.lead(s, y + G, [[R("The expensive half — proving the property holds for every "
                          "possible input — is what make prove does with a SAT "
-                         "solver.", s=10.5)]], h=228600)
+                         "solver.", s=12.0)]], h=228600)
 
     # ============================================================== reuse
     s = d.slide("3.6 · FROM MODULE TO IP", "Parameters, Hierarchy and Generate")
-    y = d.image(s, TOP - 45720, "hierarchy_generate", 5029200)
+    y = d.image(s, TOP - 45720, "hierarchy_generate", 4950000)
     d.lead(s, y + G, [[R("Eight flip-flops per stage, exactly N stages, measured at "
-                         "four depths.", b=True, c=GREEN, s=10.5)]], h=228600)
+                         "four depths.", b=True, c=GREEN, s=12.0)]], h=228600)
 
     s = d.slide("3.6 · FROM MODULE TO IP", "What Elaboration Actually Does")
     y = d.code(s, TOP, [
@@ -251,7 +261,7 @@ def build(d):
     d.lead(s, y + G, [[R("The for loop is an instruction to the ELABORATOR, not a "
                          "loop in hardware. After elaboration there are N preg "
                          "instances and no loop anywhere.", b=True, c=NAVY,
-                         s=10.5)]], h=274320)
+                         s=12.0)]], h=274320)
 
     # ========================================================== checkpoint
     s = d.slide("THEORY 3 · CHECKPOINT", "Eight Questions", accent=GREEN)
@@ -273,7 +283,7 @@ def build(d):
                   "more — one per state instead of log2(states)"],
                  ["8", "Does a generate loop exist in the netlist?",
                   "no — it is elaborated away before synthesis"]],
-                [548640, 5029200, 5669280], rh=274320, bold_cols=(0,), size=9.2)
+                [548640, 5029200, 5669280], rh=310896, bold_cols=(0,), size=11.0)
     d.lead(s, y + G, [[R("Theory 4 is about the notation — which turns out to be "
-                         "the least important part.", b=True, c=GREEN, s=11)]],
+                         "the least important part.", b=True, c=GREEN, s=12.0)]],
            h=274320)

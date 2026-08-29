@@ -30,6 +30,48 @@ os.makedirs(OUT, exist_ok=True)
 plt.rcParams["font.family"] = "DejaVu Sans"
 plt.rcParams["savefig.facecolor"] = "white"
 
+# ---------------------------------------------------------------------------
+# THE READABILITY BUDGET
+#
+# A 16:9 slide with a title bar leaves 12.30 x 5.76 inches for the picture,
+# which is an aspect ratio of 2.14. Anything taller than that is scaled DOWN
+# to fit the height, and its text shrinks with it: a figure drawn 11.5 inches
+# wide but 9 inches tall lands on the slide 6.6 inches wide, so 8pt type in it
+# reads as 4.6pt. That is why diagram text was unreadable.
+#
+# So every panel is drawn WIDE and SHORT. PW/PH below is 2.05:1, which fills
+# the slide width with a little margin, and the point sizes are chosen so that
+# text lands on the slide at roughly the size it is written here.
+#
+#   effective pt on the slide  =  fontsize x (image width drawn / PW)
+#   with a full-width panel that is ~1.07, so 12pt reads as 12.8pt.
+#
+# The prose that used to sit in a box at the bottom of a diagram belongs on
+# the slide instead, as a card: there it is real text at 11pt that stays sharp
+# at any zoom, and it keeps the panel short.
+# ---------------------------------------------------------------------------
+PW = 11.5           # panel width, inches
+PH = 5.6            # panel height, inches  ->  aspect 2.05
+PHT = 6.6           # "tall" panel, for a full-slide reference page (aspect 1.74)
+
+FS_TITLE = 17.0     # panel title
+FS_SUB = 12.0       # the one line under the title
+FS_HEAD = 13.0      # a heading inside the panel
+FS_BODY = 12.0      # body text
+FS_SMALL = 11.0     # secondary text, axis and signal labels
+FS_TABLE = 11.5     # table cells
+FS_MONO = 10.5      # code and signal names in monospace
+
+
+def panel(h=PH, w=PW):
+    """A wide, short figure sized to the slide's content area.
+
+    Returns (fig, ax, H) where H is the top of the drawing area, so every
+    diagram can lay itself out downwards from H without recomputing it.
+    """
+    f, ax = fig(w, h)
+    return f, ax, 100.0 * h / w
+
 
 def fig(w, h):
     f, ax = plt.subplots(figsize=(w, h))

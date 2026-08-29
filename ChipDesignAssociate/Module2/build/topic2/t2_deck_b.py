@@ -26,22 +26,22 @@ def build(d):
 
     # ------------------------------------------------------------ the flow
     s = d.slide("2.1 · THE FLOW", "The RTL Design Flow")
-    y = d.image(s, TOP - 45720, "design_flow", 5029200)
+    y = d.image(s, TOP - 45720, "design_flow", 4950000)
     d.lead(s, y + G, [[R("Every arrow points both ways in practice: a timing failure "
                          "sends you back to the RTL, a synthesis surprise back to the "
-                         "micro-architecture.", s=10.5)]], h=228600)
+                         "micro-architecture.", s=12.0)]], h=228600)
 
     s = d.slide("2.1 · THE FLOW", "Executed, Not Described")
-    y = d.image(s, TOP - 45720, "flow_executed", 4846320)
+    y = d.image(s, TOP - 45720, "flow_executed", 4950000)
     d.lead(s, y + G, [[R("make flow  stops at the first stage that fails. That is what "
                          "makes it a methodology rather than a diagram.", b=True,
-                         c=NAVY, s=10.5)]], h=274320)
+                         c=NAVY, s=12.0)]], h=274320)
 
     # -------------------------------------------------------- the subset
     s = d.slide("2.2 · THE SUBSET", "Which Verilog Actually Synthesises")
-    y = d.image(s, TOP - 45720, "synth_subset", 5029200)
+    y = d.image(s, TOP - 45720, "synth_subset", 4950000)
     d.lead(s, y + G, [[R("Eleven constructs, run through a real synthesiser. "
-                         "The table is measured, not remembered.", s=10.5)]],
+                         "The table is measured, not remembered.", s=12.0)]],
            h=228600)
 
     s = d.slide("2.2 · THE SUBSET", "Three Rows Worth Discussing", accent=AMBER)
@@ -72,10 +72,10 @@ def build(d):
 
     # ------------------------------------------------------- inferred latch
     s = d.slide("2.3 · THE LATCH", "The Most Common RTL Bug There Is", accent=RED)
-    y = d.image(s, TOP - 45720, "latch_inference", 4663440)
+    y = d.image(s, TOP - 45720, "latch_inference", 4950000)
     d.lead(s, y + G, [[R("It is not an error. The tool builds it, mentions it in a log "
                          "nobody reads, and hands you the design.", b=True, c=RED,
-                         s=10.5)]], h=274320)
+                         s=12.0)]], h=274320)
 
     s = d.slide("2.3 · THE LATCH", "Why a Latch In the Middle of Your Logic Hurts")
     y = d.table(s, TOP,
@@ -98,21 +98,21 @@ def build(d):
 
     d.lead(s, y + G, [[R("Rules L005 and L006 of the linter catch this, and "
                          "make lintcheck confirms the linter agrees with Yosys on "
-                         "every file.", s=10.5)]], h=274320)
+                         "every file.", s=12.0)]], h=274320)
 
     # ------------------------------------------------ sim/synth mismatch
     s = d.slide("2.4 · THE WORST BUG", "When Simulation and Silicon Disagree",
                 accent=RED)
-    y = d.image(s, TOP - 45720, "sim_synth_mismatch", 5029200)
+    y = d.image(s, TOP - 45720, "sim_synth_mismatch", 4950000)
     d.lead(s, y + G, [[R("One disagreement in six — and nothing anywhere reported an "
-                         "error.", b=True, c=RED, s=11)]], h=228600)
+                         "error.", b=True, c=RED, s=12.0)]], h=228600)
 
     s = d.slide("2.4 · THE WORST BUG", "Why This Class of Bug Is Special")
     y = d.lead(s, TOP, [[
-        R("Most bugs are found by testing. This one cannot be, because ", s=12),
+        R("Most bugs are found by testing. This one cannot be, because ", s=13.0),
         R("the thing you are testing is not the thing that will be built", b=True,
-          c=RED, s=12),
-        R(". Every test you write passes, and the chip still fails.", s=12)]],
+          c=RED, s=13.0),
+        R(". Every test you write passes, and the chip still fails.", s=13.0)]],
         h=594360)
 
     y = d.table(s, y + G,
@@ -138,39 +138,39 @@ def build(d):
 
     # ------------------------------------------------------------- rules
     s = d.slide("2.5 · THE RULES", "Seven Rules, Checked By a Tool")
-    y = d.image(s, TOP - 45720, "lint_rules", 4937760)
+    y = d.image(s, TOP - 45720, "lint_rules", 4950000)
     d.lead(s, y + G, [[R("A linter that cries wolf gets switched off. One that stays "
                          "quiet is worse than none at all.", b=True, c=NAVY,
-                         s=10.5)]], h=228600)
+                         s=12.0)]], h=228600)
 
     s = d.slide("2.5 · THE RULES", "The Coding Standard, In One Place")
-    y = d.image(s, TOP - 45720, "coding_rules", 4846320)
+    y = d.image(s, TOP - 45720, "coding_rules", 4950000)
     d.lead(s, y + G, [[R("None of these are style preferences. Every one exists "
                          "because breaking it produces a design that simulates "
-                         "differently from the way it is built.", s=10.5)]],
+                         "differently from the way it is built.", s=12.0)]],
            h=274320)
 
     # -------------------------------------------------- micro-architecture
     s = d.slide("2.6 · MICRO-ARCHITECTURE", "The Decisions RTL Cannot Make For You")
-    y = d.image(s, TOP - 45720, "partitioning", 4937760)
+    y = d.image(s, TOP - 45720, "partitioning", 4950000)
     d.lead(s, y + G, [[R("Make these on paper, before the first line of RTL. "
                          "A synthesiser will faithfully build whatever you chose.",
-                         b=True, c=AMBER, s=10.5)]], h=228600)
+                         b=True, c=AMBER, s=12.0)]], h=228600)
 
     s = d.slide("2.7 · REUSE", "Writing RTL That Someone Else Can Use")
-    y = d.image(s, TOP - 45720, "reuse", 4114800)
+    y = d.image(s, TOP - 45720, "reuse", 4300000)
     d.card(s, y + G, "Module 2's fourth terminal outcome asks for this by name",
            [[R("\"Emulate, debug and characterise reusable IPs.\" Reuse is not "
                "something you add to a design afterwards — it is a set of decisions "
                "you take while writing it, and every one of them is listed above.",
-               s=10.5)]],
+               s=12.0)]],
            accent=NAVY, h=822960)
 
     # ------------------------------------------------------ coding style
     s = d.slide("2.8 · STYLE", "One Function, Three Coding Styles")
-    y = d.image(s, TOP - 45720, "mux_styles", 5029200)
+    y = d.image(s, TOP - 45720, "mux_styles", 4950000)
     d.lead(s, y + G, [[R("Proved equivalent by SAT — and still three different "
-                         "netlists.", b=True, c=RED, s=10.5)]], h=228600)
+                         "netlists.", b=True, c=RED, s=12.0)]], h=228600)
 
     s = d.slide("2.8 · STYLE", "What To Take From That")
     y = d.cols(s, TOP, [
@@ -222,6 +222,6 @@ def build(d):
                   "no — equivalent is not the same as identical"],
                  ["9", "The three mux styles: how many cells each?",
                   "3, 6 and 10 — style did reach the netlist here"]],
-                [548640, 5029200, 5669280], rh=274320, bold_cols=(0,), size=9.2)
+                [548640, 5029200, 5669280], rh=310896, bold_cols=(0,), size=11.0)
     d.lead(s, y + G, [[R("Theory 3 is about the patterns every real block is built "
-                         "from.", b=True, c=GREEN, s=11)]], h=274320)
+                         "from.", b=True, c=GREEN, s=12.0)]], h=274320)

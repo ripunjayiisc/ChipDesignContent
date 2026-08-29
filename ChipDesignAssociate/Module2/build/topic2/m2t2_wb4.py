@@ -517,8 +517,8 @@ def build_exercises(w):
             cur = eid[0]
             h, sub = heads[cur]
             w.h2(h)
-            w.para([I(sub, {"s": 9.5, "c": SLATE})], space_after=4)
-        w.para([B("%s  [%s]  " % (eid, tag), {"c": TEAL}), N(q, {"s": 10.2})],
+            w.para([I(sub, {"s": 10.5, "c": SLATE})], space_after=4)
+        w.para([B("%s  [%s]  " % (eid, tag), {"c": TEAL}), N(q, {"s": 11.2})],
                space_after=5)
 
     w.page_break()
@@ -529,16 +529,16 @@ def build_solutions(w):
     w.para([N("Every answer below was checked against the lab. Where a number is "
               "quoted it came from a real run; where a judgement is asked for, the "
               "solution gives the reasoning that earns the marks rather than a single "
-              "word.", {"s": 10.2, "i": True})])
+              "word.", {"s": 11.2, "i": True})])
 
     cur = None
     for eid, tag, q, a in EX:
         if eid[0] != cur:
             cur = eid[0]
             w.h2("Part %s" % cur)
-        w.para([B("%s  " % eid, {"c": TEAL}), I(q, {"s": 9.6, "c": SLATE})],
+        w.para([B("%s  " % eid, {"c": TEAL}), I(q, {"s": 10.5, "c": SLATE})],
                space_after=2)
-        w.para([N(a, {"s": 10.2})], space_after=8)
+        w.para([N(a, {"s": 11.2})], space_after=8)
 
     w.page_break()
 
@@ -571,11 +571,11 @@ def build_reference(w):
              ["dataflow", "the Boolean form", "yes", "6"],
              ["gate", "every gate and wire", "yes", "6 (identical netlist)"],
              ["switch", "individual transistors", "no", "refused"]],
-            widths=[1.4, 2.2, 1.3, 1.9], size=9.2, bold_cols=(0,),
+            widths=[1.4, 2.2, 1.3, 1.9], size=10.2, bold_cols=(0,),
             align_center=False)
     w.para([N("Write at the highest level that expresses your intent. Every level you "
               "descend takes a decision away from the tool and gives it to you.",
-              {"b": True, "s": 10})])
+              {"b": True, "s": 11.0})])
 
     w.h2("The three-block state machine")
     w.code([
@@ -599,7 +599,7 @@ def build_reference(w):
              ["output appears", "one cycle after the input", "the same cycle"],
              ["output glitches", "no", "yes - inherits the input's"],
              ["measured here", "13 cells, 2 flops", "14 cells, 2 flops"]],
-            widths=[1.5, 2.5, 2.8], size=9.2, bold_cols=(0,), align_center=False)
+            widths=[1.5, 2.5, 2.8], size=10.2, bold_cols=(0,), align_center=False)
 
     w.h2("Datapath and controller")
     w.code([
@@ -620,7 +620,7 @@ def build_reference(w):
              ["L005", "if with no else in a combinational block - infers a latch"],
              ["L006", "case with no default - infers a latch"],
              ["L007", "signal driven from more than one always block"]],
-            widths=[0.9, 5.9], size=9.2, bold_cols=(0,), align_center=False)
+            widths=[0.9, 5.9], size=10.2, bold_cols=(0,), align_center=False)
 
     w.h2("The synthesisable subset, at a glance")
     w.code([

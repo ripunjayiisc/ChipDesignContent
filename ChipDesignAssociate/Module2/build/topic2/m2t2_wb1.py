@@ -23,7 +23,7 @@ def M(t, d=None, **kw):
 def build(w):
     # ------------------------------------------------------------ cover
     w.para([N("CHIP DESIGN ASSOCIATE  ·  O-LEVEL ‘CHIP DESIGN’",
-              {"b": True, "s": 11, "c": TEAL})], space_after=2)
+              {"b": True, "s": 12.0, "c": TEAL})], space_after=2)
     p = w.d.add_paragraph()
     r = p.add_run("Module 2 — Topic 2")
     r.font.name = HEADF; r.font.size = Pt(15); r.font.bold = True; r.font.color.rgb = SLATE
@@ -41,7 +41,7 @@ def build(w):
               "guided tutorials at the keyboard, and ends with 103 graded exercises "
               "and full worked solutions. Every number quoted here was produced by "
               "running the code in Topic2_Lab/. Nothing in this workbook requires you "
-              "to look anything up elsewhere.", {"s": 10.5})])
+              "to look anything up elsewhere.", {"s": 11.5})])
     w.para([N("NOS: NIE/ELE/N0102  ·  Module 2 “Verilog RTL coding for Synthesis”, "
               "subtopic 2 “RTL Design Methodology”  ·  Syllabus: basics of register "
               "transfer level (RTL) design; overview of RTL design process and "
@@ -53,7 +53,7 @@ def build(w):
     # ------------------------------------------------- terminal outcomes
     w.h1("Terminal Outcomes")
     w.para([N("After successful completion of Module 2, the student shall be able to:",
-              {"s": 10.5})])
+              {"s": 11.5})])
     w.callout("Module 2 terminal outcomes (NOS NIE/ELE/N0102)", [
         [B("1.  "), N("Understand the design cycle of VLSI.")],
         [B("2.  "), N("Understand Verilog programming syntax, "),
@@ -67,11 +67,11 @@ def build(w):
               "abstraction\" is not a phrase this workbook invented to organise the "
               "material — it is the deliverable. Part 1 takes one circuit down all "
               "four levels of abstraction Verilog offers, simulates them together, "
-              "and proves they are the same circuit.", {"s": 10.5})])
+              "and proves they are the same circuit.", {"s": 11.5})])
     w.para([N("Outcome 3 begins with knowing what is synthesisable and what is not, "
               "which is Part 2. Outcome 4 asks for reusable IP, and reuse is a set of "
               "decisions you take while writing, not a property you add afterwards — "
-              "also Part 2.", {"s": 10.5})])
+              "also Part 2.", {"s": 11.5})])
 
     # ------------------------------------------------- learning outcomes
     w.h1("Key Learning Outcomes")
@@ -88,7 +88,7 @@ def build(w):
               "review"],
              ["Compare Verilog and VHDL, and read either",
               "Synthesise a design and read what the tool actually built"]],
-            widths=[3.4, 3.4], size=9.5, align_center=False)
+            widths=[3.4, 3.4], size=10.5, align_center=False)
 
     w.callout("Each outcome is assessed by a command you run", [
         [M("make transfer, make ladder"), N("   →  what RTL means, and abstraction")],
@@ -161,7 +161,7 @@ def build(w):
               "settle. You never say how long it takes or which gates it uses. "
               "You say what value lands in which register on the next edge.")])
 
-    w.image("rtl_definition", width=6.4)
+    w.image("rtl_definition", width=6.9)
 
     w.code([
         "always @(posedge clk) begin",
@@ -178,7 +178,7 @@ def build(w):
               "1.5 is about why it has to work that way.")])
 
     w.h3("Watch it happen")
-    w.image("rtl_transfer_trace", width=6.4)
+    w.image("rtl_transfer_trace", width=6.9)
     w.para([N("A single 5 is applied on cycle 0 and never again. It lands in x on the "
               "first edge, becomes 6 in y on the second, 12 in z on the third, and "
               "reaches acc on the fourth. Nothing moved in between. That is the entire "
@@ -187,7 +187,7 @@ def build(w):
 
     w.h2("1.2  The two kinds of logic, and there is no third")
 
-    w.image("comb_vs_seq", width=6.4)
+    w.image("comb_vs_seq", width=6.9)
 
     w.para([N("Every digital block ever built is some arrangement of two kinds of "
               "logic. Learning to see which one you are looking at is the first "
@@ -233,7 +233,7 @@ def build(w):
 
     w.h2("1.3  The synchronous discipline")
 
-    w.image("sync_design", width=6.4)
+    w.image("sync_design", width=6.9)
 
     w.para([N("Almost every rule in this topic — and most of the rules in Topics 5 "
               "and 6 — is a consequence of one decision: "), B("one clock, one edge, "
@@ -252,7 +252,7 @@ def build(w):
               "so timing is edge-to-edge, not level-dependent"],
              ["registered outputs", "a block's outputs come out of flip-flops",
               "so a slow path never crosses two blocks"]],
-            widths=[1.5, 2.6, 2.7], size=9.0, bold_cols=(0,), align_center=False)
+            widths=[1.5, 2.6, 2.7], size=10.0, bold_cols=(0,), align_center=False)
 
     w.h3("What the discipline buys you")
     w.bullets([
@@ -290,7 +290,7 @@ def build(w):
               "tens of thousands of lines"],
              ["who writes it", "architects, in C or SystemC", "you",
               "the synthesiser"]],
-            widths=[1.3, 1.8, 2.0, 1.7], size=9.0, bold_cols=(0,), align_center=False)
+            widths=[1.3, 1.8, 2.0, 1.7], size=10.0, bold_cols=(0,), align_center=False)
 
     w.callout("RTL is where the trade lands correctly", [
         [N("High enough that a human can write and read a real design; low enough "
@@ -303,7 +303,7 @@ def build(w):
 
     w.h2("1.5  Blocking and non-blocking assignment")
 
-    w.image("nonblocking", width=6.4)
+    w.image("nonblocking", width=6.9)
 
     w.h3("The swap, worked through")
     w.code([
@@ -341,7 +341,7 @@ def build(w):
 
     w.h3("And what each one actually builds")
 
-    w.image("blocking_measured", width=6.4)
+    w.image("blocking_measured", width=6.9)
 
     w.para([N("The argument above is about semantics. Here is the same argument as a "
               "measurement. Two files, identical apart from one character per line:")])
@@ -378,7 +378,7 @@ def build(w):
 
     w.h2("1.6  Four levels of abstraction")
 
-    w.image("ladder", width=6.5)
+    w.image("ladder", width=6.9)
 
     w.para([N("Verilog can describe hardware at four levels. The lab writes the same "
               "full adder at all four and simulates them together:")])
@@ -405,7 +405,7 @@ def build(w):
             B("The level of abstraction changed what was written, not what it does.")])
 
     w.h3("And what a synthesiser makes of each")
-    w.image("ladder_synthesis", width=6.4)
+    w.image("ladder_synthesis", width=6.9)
 
     w.callout("Two results worth stopping on", [
         [B("The behavioural description produced the SMALLEST circuit "),
@@ -431,7 +431,7 @@ def build(w):
 
     w.h2("1.7  Simulation shows; proof settles")
 
-    w.image("proof_vs_test", width=6.4)
+    w.image("proof_vs_test", width=6.9)
 
     w.para([N("Eight patterns was exhaustive for a full adder. It stops being possible "
               "at about thirty inputs, and real designs have thousands — so the lab "
@@ -460,7 +460,7 @@ def build(w):
 
     w.h2("1.8  The running example")
 
-    w.image("running_example", width=6.4)
+    w.image("running_example", width=6.9)
 
     w.para([N("One design is carried through the rest of this workbook: a four-bit "
               "counter with an asynchronous reset, an enable and a terminal-count "
@@ -504,7 +504,7 @@ def build(w):
 
     w.h3("The numbers, worked out")
 
-    w.image("numerical_example", width=6.4)
+    w.image("numerical_example", width=6.9)
 
     w.para([N("Run the arithmetic before you run the simulator. At 100 MHz the clock "
               "period is 10 ns, the counter has 2"), N("\u2074"), N(" = 16 states, so "

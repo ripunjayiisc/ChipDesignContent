@@ -93,14 +93,14 @@ class Workbook:
         st = self.d.styles
         n = st["Normal"]
         n.font.name = BODYF
-        n.font.size = Pt(10.5)
+        n.font.size = Pt(11.5)
         n.font.color.rgb = BODY
         n.paragraph_format.space_after = Pt(6)
         n.paragraph_format.line_spacing = 1.12
-        specs = [("Heading 1", 17, NAVY, True, 14, 7),
-                 ("Heading 2", 13.5, NAVY, True, 11, 5),
-                 ("Heading 3", 11.5, TEAL, True, 9, 3),
-                 ("Heading 4", 10.5, AMBER, True, 7, 2)]
+        specs = [("Heading 1", 19, NAVY, True, 14, 7),
+                 ("Heading 2", 15, NAVY, True, 11, 5),
+                 ("Heading 3", 12.5, TEAL, True, 9, 3),
+                 ("Heading 4", 11.5, AMBER, True, 7, 2)]
         for name, size, col, bold, before, after in specs:
             s = st[name]
             s.font.name = HEADF
@@ -128,7 +128,7 @@ class Workbook:
         r.font.name = BODYF
 
     # ------------------------------------------------------------- blocks
-    def para(self, runs, size=10.5, align=None, space_after=6, style=None,
+    def para(self, runs, size=11.5, align=None, space_after=6, style=None,
              indent=0):
         p = self.d.add_paragraph(style=style)
         if align:
@@ -153,7 +153,7 @@ class Workbook:
     def h3(self, t): return self.d.add_paragraph(t, style="Heading 3")
     def h4(self, t): return self.d.add_paragraph(t, style="Heading 4")
 
-    def bullets(self, items, size=10.5, indent=0.22):
+    def bullets(self, items, size=11.5, indent=0.22):
         for it in items:
             p = self.d.add_paragraph()
             p.paragraph_format.left_indent = Inches(indent)
@@ -171,7 +171,7 @@ class Workbook:
                 rr.font.italic = kw.get("i", False)
                 rr.font.color.rgb = kw.get("c", BODY)
 
-    def numbered(self, items, size=10.5, indent=0.22, start=1):
+    def numbered(self, items, size=11.5, indent=0.22, start=1):
         for i, it in enumerate(items, start):
             p = self.d.add_paragraph()
             p.paragraph_format.left_indent = Inches(indent)
@@ -224,7 +224,7 @@ class Workbook:
         self.para("", space_after=2)
         return t
 
-    def code(self, lines, caption=None, size=8.8):
+    def code(self, lines, caption=None, size=9.6):
         if caption:
             p = self.d.add_paragraph()
             p.paragraph_format.space_after = Pt(2)
@@ -238,15 +238,24 @@ class Workbook:
         for i, ln in enumerate(lines):
             p = c.paragraphs[0] if i == 0 else c.add_paragraph()
             p.paragraph_format.space_after = Pt(0)
+            # a little air top and bottom so the first and last lines do not
+            # sit against the edge of the shaded cell
+            p.paragraph_format.space_before = Pt(4 if i == 0 else 0)
             p.paragraph_format.line_spacing = 1.0
             r = p.add_run(ln if ln else " ")
             r.font.name = MONOF
             r.font.size = Pt(size)
             r.font.color.rgb = RGBColor(0xDC, 0xE6, 0xF0)
+        pad = c.add_paragraph()
+        pad.paragraph_format.space_after = Pt(0)
+        pad.paragraph_format.line_spacing = 1.0
+        pr = pad.add_run(" ")
+        pr.font.name = MONOF
+        pr.font.size = Pt(4)
         self.para("", space_after=2)
         return t
 
-    def table(self, headers, rows, widths=None, size=9.5, head_fill="0E2A47",
+    def table(self, headers, rows, widths=None, size=10.5, head_fill="0E2A47",
               bold_cols=(), align_center=True):
         t = self.d.add_table(rows=1 + len(rows), cols=len(headers))
         t.alignment = WD_TABLE_ALIGNMENT.CENTER
@@ -283,7 +292,7 @@ class Workbook:
         self.para("", space_after=4)
         return t
 
-    def image(self, name, width=6.6, caption=None):
+    def image(self, name, width=6.9, caption=None):
         self.d.add_picture(os.path.join(os.environ.get("CDA_IMG_DIR", IMG),
                                         name + ".png"), width=Inches(width))
         self.d.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER

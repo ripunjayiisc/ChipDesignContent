@@ -101,18 +101,19 @@ def learning_outcomes():
 
 
 def syllabus_map():
-    W, Hin = 11.5, 7.4
+    W, Hin = 11.5, 8.4
     f, ax = fig(W, Hin)
     H = 100 * Hin / W                        # 64.3
     title(ax, 50, H - 3, "Every syllabus phrase, and where it is covered", 12.5)
 
-    rows = [["Basics of register transfer level (RTL) design", "Theory 1", "5-16"],
-            ["Overview of RTL design process and methodology", "Theory 2", "17-38"],
+    rows = [["Basics of register transfer level (RTL) design", "Theory 1", "6-25"],
+            ["Overview of RTL design process and methodology", "Theory 2", "26-41"],
+            ["  ... and the patterns that process produces", "Theory 3", "42-59"],
             ["Introduction to hardware description languages\n(HDLs) such as "
-             "Verilog or VHDL", "Theory 3", "39-54"],
-            ["Practical: RTL Design and Implementation Labs", "Labs A-I", "55-70"]]
+             "Verilog or VHDL", "Theory 4", "60-72"],
+            ["Practical: RTL Design and Implementation Labs", "Labs A-N", "73-89"]]
     table(ax, 4, H - 9.0, ["syllabus phrase", "section", "slides"],
-          rows, [56, 20, 16], 7.0, size=8.6, bold_col=[1])
+          rows, [56, 20, 16], 6.4, size=8.6, bold_col=[1])
 
     box(ax, 4, 3.0, 92, 21.0, fc="#FFF7EC", ec=AMBER, lw=1.7)
     ax.text(50, 20.6, "The syllabus gives this subtopic 4 notional hours",
@@ -130,17 +131,20 @@ def syllabus_map():
 
 
 def topic_structure():
-    W, Hin = 11.5, 8.8
+    W, Hin = 11.5, 9.8
     f, ax = fig(W, Hin)
     H = 100 * Hin / W                        # 76.5
     title(ax, 50, H - 3, "How this session runs", 13)
 
-    parts = [("THEORY 1", "What RTL is", "registers, transfers, and four levels of "
-              "abstraction", TEAL),
+    parts = [("THEORY 1", "What RTL is", "combinational and sequential, the "
+              "synchronous discipline, four levels of abstraction", TEAL),
              ("THEORY 2", "The methodology", "the flow, the subset, the rules, and "
               "why each exists", VIOLET),
-             ("THEORY 3", "HDLs", "what an HDL is, and Verilog against VHDL", NAVY),
-             ("PRACTICAL", "Labs A-I", "14 hours, 60 exercises, all measured", GREEN)]
+             ("THEORY 3", "The patterns", "datapath and controller, the finite "
+              "state machine, parameters and generate", AMBER),
+             ("THEORY 4", "HDLs", "what an HDL is, and Verilog against VHDL", NAVY),
+             ("PRACTICAL", "Labs A-N", "26 hours, 88 exercises, all measured",
+              GREEN)]
     y = H - 9.5
     rh = 8.6
     for nm, hd, sub, col in parts:
@@ -170,7 +174,7 @@ def topic_structure():
 
 
 def what_you_can_do():
-    W, Hin = 11.5, 7.6
+    W, Hin = 11.5, 9.8
     f, ax = fig(W, Hin)
     H = 100 * Hin / W                        # 66.1
     title(ax, 50, H - 3, "By the end of this subtopic you can", 13, color=GREEN)
@@ -186,6 +190,12 @@ def what_you_can_do():
              "Recognise an inferred latch before the tool builds one.",
              "Explain why an incomplete sensitivity list is worse than an error.",
              "Apply the seven coding rules, and say why each one exists.",
+             "Split a block into a datapath and a controller, and say which signals "
+             "cross between them.",
+             "Write a state machine in the three-block form, in either style, and "
+             "justify the choice.",
+             "Parameterise a design so one file covers a family of widths and "
+             "depths.",
              "Read a VHDL design without needing it translated.",
              "Take a design from spec to formal proof and show your evidence at "
              "each stage."]

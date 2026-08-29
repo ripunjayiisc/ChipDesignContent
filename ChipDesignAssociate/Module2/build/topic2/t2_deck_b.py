@@ -166,7 +166,42 @@ def build(d):
                s=10.5)]],
            accent=NAVY, h=822960)
 
-    s = d.slide("THEORY 2 · CHECKPOINT", "Seven Questions", accent=GREEN)
+    # ------------------------------------------------------ coding style
+    s = d.slide("2.8 · STYLE", "One Function, Three Coding Styles")
+    y = d.image(s, TOP - 45720, "mux_styles", 5029200)
+    d.lead(s, y + G, [[R("Proved equivalent by SAT — and still three different "
+                         "netlists.", b=True, c=RED, s=10.5)]], h=228600)
+
+    s = d.slide("2.8 · STYLE", "What To Take From That")
+    y = d.cols(s, TOP, [
+        ("EQUIVALENT is not IDENTICAL",
+         [[R("A formal equivalence proof answers exactly one question: do these "
+             "two descriptions compute the same function?")],
+          [R("It says nothing about area, nothing about timing and nothing about "
+             "power. Those are separate questions with separate tools.",
+             b=True, c=NAVY)]], RED, CARD_R),
+        ("MEASURE YOUR OWN TOOL",
+         [[R("The claim 'the optimiser flattens the difference' is the most "
+             "repeated statement in RTL teaching, and on this toolchain it is "
+             "false: 3, 6 and 10 cells.")],
+          [R("A different synthesiser may well close the gap. Find out rather "
+             "than assume.", b=True, c=NAVY)]], AMBER, CARD_A),
+        ("SO WHICH DO YOU WRITE?",
+         [[R("Whichever reads best to the next person, which is usually the "
+             "case statement for anything with more than three branches.")],
+          [R("Then measure, and only reach for the terse form if the block is "
+             "actually on a critical path.")]], GREEN, CARD_G)],
+        h=2743200)
+
+    d.card(s, y + G, "Why the three differ at all",
+           [[R("The conditional expression hands sel[1] and sel[0] straight to the "
+               "multiplexer selects. The case and if/else versions ask the tool to "
+               "build equality comparators against 2'b00, 2'b01 and so on, and then "
+               "to work out for itself that those comparisons ARE the select bits. "
+               "It gets part of the way.")]],
+           accent=NAVY, h=868680)
+
+    s = d.slide("THEORY 2 · CHECKPOINT", "Nine Questions", accent=GREEN)
     y = d.table(s, TOP,
                 ["#", "Question", "The answer in one line"],
                 [["1", "Name the first four stages of the flow.",
@@ -182,7 +217,11 @@ def build(d):
                  ["6", "What does # do in synthesisable RTL?",
                   "nothing at all — it is silently ignored"],
                  ["7", "Name three decisions synthesis will not make for you.",
-                  "cycle count, register placement, sharing, interface"]],
-                [548640, 5029200, 5669280], rh=283464, bold_cols=(0,), size=9.5)
-    d.lead(s, y + G, [[R("Theory 3 is about the notation — which turns out to be the "
-                         "least important part.", b=True, c=GREEN, s=11)]], h=274320)
+                  "cycle count, register placement, sharing, interface"],
+                 ["8", "Does formal equivalence say anything about area?",
+                  "no — equivalent is not the same as identical"],
+                 ["9", "The three mux styles: how many cells each?",
+                  "3, 6 and 10 — style did reach the netlist here"]],
+                [548640, 5029200, 5669280], rh=274320, bold_cols=(0,), size=9.2)
+    d.lead(s, y + G, [[R("Theory 3 is about the patterns every real block is built "
+                         "from.", b=True, c=GREEN, s=11)]], h=274320)

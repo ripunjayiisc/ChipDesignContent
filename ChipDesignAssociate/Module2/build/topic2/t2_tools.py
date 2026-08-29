@@ -155,10 +155,10 @@ def lab_flow():
 
 
 def lab_map():
-    W, Hin = 11.5, 10.2
+    W, Hin = 11.5, 13.0
     f, ax = fig(W, Hin)
-    H = 100 * Hin / W                        # 88.7
-    title(ax, 50, H - 3, "The practical component - 14 hours, nine parts", 12.5)
+    H = 100 * Hin / W
+    title(ax, 50, H - 3, "The practical component - 26 hours, fourteen parts", 12.5)
     ax.text(50, H - 7.2, "Module 2 practical: RTL Design and Implementation Labs "
                          "(40 h). This is Topic 2's share.",
             fontsize=8.8, color=SLATE, ha="center")
@@ -170,36 +170,48 @@ def lab_map():
              ("C", "Proof, not just testing", "equivalence checking, and a bug it "
               "catches", 2, NAVY),
              ("D", "The synthesisable subset", "eleven constructs, measured", 2,
-              VIOLET),
+              NAVY),
              ("E", "Simulation vs silicon", "the sensitivity-list mismatch", 1,
               VIOLET),
              ("F", "The coding rules", "build the linter, then check the linter", 2,
+              VIOLET),
+             ("G", "Coding style", "one function three ways: 3, 6 and 10 cells", 1,
+              VIOLET),
+             ("H", "The two pitfalls", "the inferred latch, and blocking in a "
+              "clocked block", 2, RED),
+             ("I", "State machines", "Moore, Mealy, encoding - all measured", 3,
               AMBER),
-             ("G", "Two languages", "the same counter in Verilog and VHDL", 1, AMBER),
-             ("H", "The flow, end to end", "spec to formal proof, seven stages", 2,
+             ("J", "A controller with a timer", "the traffic light, and property "
+              "checking", 2, AMBER),
+             ("K", "Datapath and controller", "the accumulator, and its control "
+              "bundle", 2, AMBER),
+             ("L", "From module to IP", "parameters, hierarchy, generate", 2, GREEN),
+             ("M", "Two languages", "counter and FSM, Verilog and VHDL, diffed", 2,
               GREEN),
-             ("I", "Vendor tools", "the same design in Vivado", 1, RED)]
+             ("N", "The flow and the vendor tools", "spec to formal proof, then "
+              "Vivado", 2, GREEN)]
     y = H - 11.0
-    rh = 5.6
+    rh = 4.9
     for n, hd, sub, hrs, col in parts:
         box(ax, 3, y - rh, 94, rh, fc=WHITE, ec=col, lw=1.3)
-        ax.add_patch(Circle((7.5, y - rh / 2), 2.2, fc=col, ec=col, zorder=5))
-        ax.text(7.5, y - rh / 2, n, ha="center", va="center", fontsize=8.8,
+        ax.add_patch(Circle((7.5, y - rh / 2), 2.0, fc=col, ec=col, zorder=5))
+        ax.text(7.5, y - rh / 2, n, ha="center", va="center", fontsize=8.4,
                 color=WHITE, fontweight="bold", zorder=6)
-        ax.text(12, y - rh / 2, hd, ha="left", va="center", fontsize=8.8, color=col,
+        ax.text(12, y - rh / 2, hd, ha="left", va="center", fontsize=8.6, color=col,
                 fontweight="bold")
-        ax.text(42, y - rh / 2, sub, ha="left", va="center", fontsize=8.0,
+        ax.text(45, y - rh / 2, sub, ha="left", va="center", fontsize=7.9,
                 color=BODY)
-        ax.text(94, y - rh / 2, "%d h" % hrs, ha="right", va="center", fontsize=8.6,
+        ax.text(94, y - rh / 2, "%d h" % hrs, ha="right", va="center", fontsize=8.4,
                 color=NAVY, fontweight="bold")
-        y -= rh + 1.2
+        y -= rh + 1.0
 
     box(ax, 3, 3.0, 94, 14.0, fc=LIGHT, ec=NAVY, lw=1.6)
-    ax.text(50, 13.6, "60 graded exercises, every one with a worked solution",
+    ax.text(50, 13.6, "88 graded exercises, every one with a worked solution",
             fontsize=9.4, color=NAVY, ha="center", fontweight="bold")
-    ax.text(50, 8.6, "Parts A-C build the mental model. D-F are the methodology, made "
-                     "mechanical. G-I connect it\nto other languages and to the tools "
-                     "you will meet at work.",
+    ax.text(50, 8.6, "A-D build the mental model. E-H are the methodology, made "
+                     "mechanical. I-L are the patterns every\nreal block is built "
+                     "from. M-N connect it to other languages and to the tools you "
+                     "will meet at work.",
             fontsize=8.5, color=BODY, ha="center")
     ax.text(50, 4.4, "Every number in this deck came from a target in that lab.",
             fontsize=8.4, color=GREEN, ha="center", fontstyle="italic")
@@ -207,21 +219,31 @@ def lab_map():
 
 
 def assessment():
-    W, Hin = 11.5, 7.8
+    W, Hin = 11.5, 10.8
     f, ax = fig(W, Hin)
-    H = 100 * Hin / W                        # 67.8
-    title(ax, 50, H - 3, "How the 60 exercises are weighted", 13)
+    H = 100 * Hin / W
+    title(ax, 50, H - 3, "How the 88 exercises are weighted", 13)
 
-    rows = [["A · what RTL means", "6", "10%", "can you read a transfer as hardware"],
-            ["B · the ladder", "9", "15%", "same circuit, four notations"],
-            ["C · proof", "7", "12%", "why exhaustive testing stops working"],
-            ["D · the subset", "10", "18%", "prediction before measurement"],
-            ["E · sim vs silicon", "5", "10%", "explaining the mismatch precisely"],
-            ["F · coding rules", "10", "17%", "the rule, and the reason for it"],
-            ["G · two languages", "5", "8%", "reading VHDL without panic"],
-            ["H · the flow", "8", "10%", "evidence at every stage"]]
+    rows = [["A · what RTL means", "5", "5%", "can you read a transfer as hardware"],
+            ["B · the ladder", "8", "8%", "same circuit, four notations"],
+            ["C · proof", "6", "7%", "why exhaustive testing stops working"],
+            ["D · the subset", "8", "9%", "prediction before measurement"],
+            ["E · sim vs silicon", "4", "5%", "explaining the mismatch precisely"],
+            ["F · coding rules", "8", "9%", "the rule, and the reason for it"],
+            ["G · coding style", "5", "5%", "equivalent is not identical"],
+            ["H · the two pitfalls", "7", "8%", "what the code BUILDS, not what it "
+             "says"],
+            ["I · state machines", "12", "13%", "the three-block form, and Moore vs "
+             "Mealy"],
+            ["J · controller + timer", "6", "7%", "writing a property, not reading a "
+             "waveform"],
+            ["K · datapath/controller", "7", "8%", "where each signal belongs, and "
+             "why"],
+            ["L · module to IP", "6", "7%", "elaboration against synthesis"],
+            ["M · two languages", "3", "4%", "reading VHDL without panic"],
+            ["N · the flow", "3", "5%", "evidence at every stage"]]
     table(ax, 3, H - 9.0, ["part", "exercises", "weight", "assessed on"],
-          rows, [28, 16, 14, 36], 4.8, size=8.4, bold_col=[0])
+          rows, [28, 15, 13, 38], 4.3, size=8.0, bold_col=[0])
 
     box(ax, 3, 3.0, 94, 15.0, fc="#FDECEF", ec=RED, lw=1.7)
     ax.text(50, 14.6, "The rule that runs through every part", fontsize=9.4,

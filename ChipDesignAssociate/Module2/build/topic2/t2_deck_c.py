@@ -14,58 +14,90 @@ def R(t, **kw):
 
 def build(d):
     d.section_slide(
-        "THEORY 3", "Introduction to Hardware Description Languages",
+        "THEORY 4", "Introduction to Hardware Description Languages",
         "The syllabus says \"HDLs such as Verilog or VHDL\". The word doing "
         "the work is OR.",
         ["Why an HDL is not a programming language",
          "Everything happens at once",
          "The parts of a module, and the word reg that confuses everyone",
-         "Verilog and VHDL, side by side and both actually run"],
+         "Verilog and VHDL as reference cards, and a line-for-line mapping",
+         "The anatomy of a testbench that checks itself",
+         "Both languages actually run, and their transcripts diffed"],
         accent=NAVY)
 
-    s = d.slide("3.1 · NOT A PROGRAM", "An HDL Is Not a Programming Language")
+    s = d.slide("4.1 · NOT A PROGRAM", "An HDL Is Not a Programming Language")
     y = d.image(s, TOP - 45720, "what_is_hdl", 4846320)
     d.lead(s, y + G, [[R("You are not writing instructions for a machine to follow. "
                          "You are writing a description of a machine.", b=True,
                          c=NAVY, s=11)]], h=274320)
 
-    s = d.slide("3.2 · CONCURRENCY", "Everything Happens At Once")
+    s = d.slide("4.2 · CONCURRENCY", "Everything Happens At Once")
     y = d.image(s, TOP - 45720, "concurrency", 4846320)
     d.lead(s, y + G, [[R("Write those three assign lines in any order you like — the "
                          "circuit is identical.", s=10.5)]], h=274320)
 
-    s = d.slide("3.3 · ANATOMY", "The Parts of a Verilog Module")
+    s = d.slide("4.3 · ANATOMY", "The Parts of a Verilog Module")
     y = d.image(s, TOP - 45720, "module_anatomy", 4937760)
     d.lead(s, y + G, [[R("reg does not mean register. What creates a flip-flop is "
                          "assigning inside always @(posedge clk) — nothing else.",
                          b=True, c=AMBER, s=10.5)]], h=228600)
 
-    s = d.slide("3.4 · SIMULATION", "How a Simulator Runs an HDL")
+    s = d.slide("4.4 · SIMULATION", "How a Simulator Runs an HDL")
     y = d.image(s, TOP - 45720, "event_simulation", 4937760)
     d.lead(s, y + G, [[R("The order blocks are evaluated in is genuinely unspecified. "
                          "That is why non-blocking assignment exists.", s=10.5)]],
            h=228600)
 
-    s = d.slide("3.5 · TWO LANGUAGES", "Verilog and VHDL, Side By Side")
+    # --------------------------------------------------- reference cards
+    s = d.slide("4.5 · REFERENCE", "Verilog On One Page")
+    y = d.image(s, TOP - 45720, "verilog_card", 5211445)
+    d.lead(s, y + G, [[R("Not the whole language — the part that synthesises, "
+                         "which is much smaller.", s=10.5)]], h=228600)
+
+    s = d.slide("4.5 · REFERENCE", "VHDL On One Page")
+    y = d.image(s, TOP - 45720, "vhdl_card", 5211445)
+    d.lead(s, y + G, [[R("Everything on this page has an exact counterpart on the "
+                         "previous one.", s=10.5)]], h=228600)
+
+    s = d.slide("4.5 · REFERENCE", "Verilog to VHDL, Line For Line")
+    y = d.image(s, TOP - 45720, "lang_mapping", 5211445)
+    d.lead(s, y + G, [[R("Learn one and you can read the other in an afternoon. "
+                         "This table is the afternoon.", b=True, c=NAVY, s=10.5)]],
+           h=228600)
+
+    s = d.slide("4.5 · REFERENCE", "What a Testbench Is Made Of")
+    y = d.image(s, TOP - 45720, "testbench_anatomy", 5211445)
+    d.lead(s, y + G, [[R("Topic 5 covers verification properly. These six parts are "
+                         "the minimum you need to finish Topic 2.", s=10.5)]],
+           h=228600)
+
+    s = d.slide("4.6 · TWO LANGUAGES", "Verilog and VHDL, Side By Side")
     y = d.image(s, TOP - 45720, "verilog_vhdl", 5029200)
     d.lead(s, y + G, [[R("None of those differences are about hardware. Both describe "
                          "registers, logic and hierarchy; both synthesise to the same "
                          "gates.", s=10.5)]], h=228600)
 
-    s = d.slide("3.5 · TWO LANGUAGES", "The Same Counter, In Both, Actually Run")
+    s = d.slide("4.6 · TWO LANGUAGES", "Both Designs, In Both Languages, Actually "
+                "Run")
     y = d.image(s, TOP - 45720, "two_languages_result", 4297680)
-    d.card(s, y + G, "Not \"they look similar\"",
-           [[R("The two transcripts were compared line by line by diff, and there was "
-               "nothing to report — 18 cycles, two languages, two different "
-               "simulators, one design.", s=10.5)]],
-           accent=GREEN, fill=CARD_G, h=685800)
+    y = d.card(s, y + G, "Not \"they look similar\"",
+               [[R("Both transcripts were compared line by line by diff and there "
+                   "was nothing to report: the counter over 18 cycles, and the "
+                   "Moore '101' detector over 17 — two languages, two different "
+                   "simulators, one design each.", s=10.5)]],
+               accent=GREEN, fill=CARD_G, h=822960)
 
-    s = d.slide("3.6 · WHICH ONE", "Which HDL Should You Learn?")
+    d.lead(s, y + G, [[R("The state machine is the interesting one: VHDL gives the "
+                         "states a real enumerated TYPE, so an illegal state will "
+                         "not compile. Verilog gives them numbers.", b=True,
+                         c=NAVY, s=10.5)]], h=274320)
+
+    s = d.slide("4.7 · WHICH ONE", "Which HDL Should You Learn?")
     y = d.image(s, TOP - 45720, "hdl_choose", 4937760)
     d.lead(s, y + G, [[R("Learn the concepts. The notation follows in an afternoon.",
                          b=True, c=GREEN, s=11)]], h=228600)
 
-    s = d.slide("THEORY 3 · CHECKPOINT", "Five Questions", accent=GREEN)
+    s = d.slide("THEORY 4 · CHECKPOINT", "Seven Questions", accent=GREEN)
     y = d.table(s, TOP,
                 ["#", "Question", "The answer in one line"],
                 [["1", "Name the biggest difference between an HDL and a program.",
@@ -77,18 +109,24 @@ def build(d):
                  ["4", "Why is the evaluation order unspecified?",
                   "the standard leaves it free; <= makes it not matter"],
                  ["5", "Verilog or VHDL?",
-                  "either — the concepts are identical, and the lab proves it"]],
+                  "either — the concepts are identical, and the lab proves it"],
+                 ["6", "What does VHDL catch that Verilog does not?",
+                  "illegal states, non-exhaustive cases, width mismatches"],
+                 ["7", "Where must a testbench's expected answer come from?",
+                  "the stimulus — never from the design under test"]],
                 [548640, 5029200, 5669280], rh=283464, bold_cols=(0,), size=9.5)
 
     # ==================================================== PRACTICAL section
     d.section_slide(
-        "PRACTICAL", "Labs A–I",
-        "14 hours, 60 graded exercises, and not one number in this deck that "
+        "PRACTICAL", "Labs A–N",
+        "26 hours, 88 graded exercises, and not one number in this deck that "
         "you cannot reproduce yourself.",
         ["Which tool answers which question, and how to install them",
-         "Labs A–C: what RTL means, the ladder, and proof",
-         "Labs D–F: the subset, the mismatch, and the coding rules",
-         "Labs G–I: two languages, the whole flow, and the vendor tools"],
+         "Labs A–D: what RTL means, the ladder, proof, and the subset",
+         "Labs E–H: the mismatch, the coding rules, style, and the two pitfalls",
+         "Labs I–L: state machines, a controller with a timer, datapath and "
+         "controller, and reuse",
+         "Labs M–N: two languages, the whole flow, and the vendor tools"],
         accent=GREEN)
 
     s = d.slide("PRACTICAL · TOOLS", "The Tools, and What Each One Is For")
@@ -120,11 +158,11 @@ def build(d):
                          "What will be built? Is that still your design?", s=10.5)]],
            h=274320)
 
-    s = d.slide("PRACTICAL · MAP", "Nine Parts, Fourteen Hours")
-    y = d.image(s, TOP - 45720, "lab_map", 5120640)
-    d.lead(s, y + G, [[R("Parts A–C build the mental model, D–F the methodology, "
-                         "G–I the connection to other languages and real tools.",
-                         s=10.5)]], h=182880)
+    s = d.slide("PRACTICAL · MAP", "Fourteen Parts, Twenty-Six Hours")
+    y = d.image(s, TOP - 45720, "lab_map", 5303520)
+    d.lead(s, y + G, [[R("A–D build the mental model, E–H the methodology, I–L the "
+                         "patterns every block is built from, M–N the connection to "
+                         "other languages and real tools.", s=10)]], h=182880)
 
     # ------------------------------------------------------------ labs A-C
     s = d.slide("LABS A–C", "What RTL Means, the Ladder, and Proof")
@@ -180,12 +218,95 @@ def build(d):
                          "cannot fix it"]],
                 [1188720, 10058400], rh=283464, bold_cols=(0,))
 
-    # ------------------------------------------------------------ labs G-I
-    s = d.slide("LABS G–I", "Two Languages, the Whole Flow, and the Vendor Tools")
+    # ------------------------------------------------------------ labs G-H
+    s = d.slide("LABS G–H", "Coding Style, and the Two Pitfalls")
+    y = d.code(s, TOP, [
+        "$ make mux",
+        "  mux4_assign vs mux4_case      EQUIVALENT  (proved, 92 SAT variables)",
+        "  mux4_assign                     3 cells     0 flip-flops",
+        "  mux4_if                         6 cells     0 flip-flops",
+        "  mux4_case                      10 cells     0 flip-flops",
+        "",
+        "$ make pitfalls",
+        "  non-blocking version : 0 wrong cycles",
+        "  blocking version     : 6 wrong cycles",
+        "  shift_nb (non-blocking)         3 cells     3 flip-flops",
+        "  shift_bl (blocking)             1 cells     1 flip-flops",
+        "  s03_latch   (missing else)      1 cells     *** 1 LATCH INFERRED ***"],
+        size=9.2)
+
+    d.table(s, y + G,
+            ["Exercise", "Task"],
+            [["G.1", "Predict the three cell counts before you run make mux"],
+             ["G.2", "Write a fourth style of your own and predict where it lands"],
+             ["H.1", "Predict q_bl for the first six cycles, then run it"],
+             ["H.2", "Explain in two sentences why no tool warned about shift_bl"],
+             ["H.3", "Add an else to s03_latch and confirm the latch disappears"]],
+            [1188720, 10058400], rh=283464, bold_cols=(0,))
+
+    # ------------------------------------------------------------ labs I-K
+    s = d.slide("LABS I–K", "State Machines, a Timer, and a Datapath")
+    y = d.code(s, TOP, [
+        "$ make fsm",
+        "  matches in the stream : 5      mismatches vs golden  : 0",
+        "  PASS - same language, Moore trails Mealy by one cycle,",
+        "         and the one-hot encoding is indistinguishable",
+        "  seq101_moore  binary           13 cells     2 flip-flops",
+        "  seq101_moore  one-hot          30 cells     4 flip-flops",
+        "  cycles checked : 40   property violations : 0        (traffic light)",
+        "",
+        "$ make dpctrl",
+        "  golden total : 157   hardware sum : 157",
+        "  accum_ctrl   (controller)      10 cells     2 flip-flops",
+        "  accum_datapath (datapath)     145 cells    24 flip-flops"],
+        size=9.2)
+
+    d.table(s, y + G,
+            ["Exercise", "Task"],
+            [["I.1", "Draw the state diagram for '110' before you write any code"],
+             ["I.2", "Write it in both styles and confirm the one-cycle offset"],
+             ["I.3", "Re-encode the Moore machine as gray and measure the cells"],
+             ["J.1", "Add a pedestrian request input and a third property to check"],
+             ["K.1", "Move the terminal-count test into the controller. What "
+                     "breaks, and why is it worse?"]],
+            [1188720, 10058400], rh=283464, bold_cols=(0,))
+
+    # -------------------------------------------------------------- lab L
+    s = d.slide("LAB L", "From a Module to an IP")
+    y = d.code(s, TOP, [
+        "$ make reuse",
+        "  delayline mismatches : 0        prescaler ratio errors : 0",
+        "",
+        "  delayline #(W=8, N) synthesised at four different depths:",
+        "    N = 1                           8 cells     8 flip-flops",
+        "    N = 2                          16 cells    16 flip-flops",
+        "    N = 4                          32 cells    32 flip-flops",
+        "    N = 8                          64 cells    64 flip-flops"],
+        size=9.5)
+
+    y = d.table(s, y + G,
+                ["Exercise", "Task"],
+                [["L.1", "Predict the cell count for N = 16 before running it"],
+                 ["L.2", "Add a bypass parameter that removes the registers "
+                         "entirely when N = 0"],
+                 ["L.3", "Instantiate counter_n three times to divide by 4096, and "
+                         "check the ratio"]],
+                [1188720, 10058400], rh=283464, bold_cols=(0,))
+
+    d.card(s, y + G, "L.2 is the one worth arguing about",
+           [[R("A generate loop with N = 0 builds nothing, so dout must come "
+               "straight from din. Getting that right means understanding that "
+               "the parameter is resolved before any hardware exists — which is "
+               "the whole point of the lab.")]],
+           accent=GREEN, fill=CARD_G, h=868680)
+
+    # ------------------------------------------------------------ labs M-N
+    s = d.slide("LABS M–N", "Two Languages, the Whole Flow, and the Vendor Tools")
     y = d.code(s, TOP, [
         "$ make langs",
         "  === Verilog: iverilog ===        === VHDL: ghdl ===",
         "  IDENTICAL over all 18 cycles - including the wrap and the terminal count.",
+        "  IDENTICAL over all 17 cycles, detections included.   (the '101' detector)",
         "",
         "$ make flow",
         "  STAGE 2  LINT              0 issues",
@@ -196,10 +317,10 @@ def build(d):
         "  All seven stages passed."],
         size=9.5)
 
-    d.card(s, y + G, "Lab I: the same design in Vivado",
+    d.card(s, y + G, "Lab N: the same design in Vivado",
            [[R("Read the design, synthesise for a real part, report utilisation, "
                "write the netlist for gate-level simulation. Vivado is not installed "
-               "in the environment these materials were built in, so lab I is the one "
+               "in the environment these materials were built in, so lab N is the one "
                "whose output is not reproduced here — run it and record what you "
                "get.", s=10.5)]],
            accent=AMBER, fill=CARD_A, h=1005840)
@@ -210,8 +331,8 @@ def build(d):
                          "here. Every number in this deck came from the free "
                          "toolchain.", b=True, c=AMBER, s=10.5)]], h=228600)
 
-    s = d.slide("LABS · ASSESSMENT", "How the 60 Exercises Are Weighted")
-    y = d.image(s, TOP - 45720, "assessment", 4937760)
+    s = d.slide("LABS · ASSESSMENT", "How the 88 Exercises Are Weighted")
+    y = d.image(s, TOP - 45720, "assessment", 5211445)
     d.lead(s, y + G, [[R("Predict, then measure. Being wrong and knowing why is the "
                          "whole point of a lab.", b=True, c=RED, s=10.5)]],
            h=228600)
@@ -229,25 +350,35 @@ def build(d):
         "not, and that difference is a genuine trap.",
         "Vivado and ModelSim were not run. Every measured number here came from "
         "iverilog, ghdl and yosys, and is reproducible with make.",
-        "Nothing here covers verification methodology beyond a directed testbench — "
-        "that is Topic 5, and it is a large subject on its own."],
+        "Nothing here covers verification methodology beyond a directed testbench "
+        "and a handful of assertions — that is Topic 5, a large subject on its own.",
+        "The state machines here are small and single-clock. Clock-domain crossing, "
+        "reset synchronisers and safe-state recovery are all real, and all later."],
         accent=AMBER, size=11, step=457200)
 
     # -------------------------------------------------------------- summary
-    s = d.slide("SUMMARY", "Topic 2 In Ten Lines", accent=GREEN)
+    s = d.slide("SUMMARY", "Topic 2 In Fourteen Lines", accent=GREEN)
     d.bullets(s, TOP, [
         "RTL says which registers exist and what transfers into them. Nothing else.",
-        "<= reads every right-hand side first, then updates together. = does not.",
+        "There are two kinds of logic, combinational and sequential, and no third.",
+        "<= reads every right-hand side first, then updates together. = does not — "
+        "and the blocking version built 1 flip-flop where 3 were meant.",
         "Four levels of abstraction describe the same circuit — proved, not assumed.",
-        "The behavioural description produced the smallest netlist: 5 cells against 6.",
-        "Write at the highest level that says what you mean.",
+        "Write at the highest level that says what you mean: behavioural gave 5 "
+        "cells against 6.",
         "Not all legal Verilog is synthesisable, and a / b cost 371 cells against 0.",
-        "A combinational block that does not assign on every path builds a latch.",
+        "A combinational block that does not assign on every path builds a latch; "
+        "a default assignment at the top of the block prevents it.",
         "An incomplete sensitivity list makes simulation and silicon disagree "
         "silently.",
-        "Seven coding rules, checked by a tool, and cross-checked against Yosys.",
-        "Verilog and VHDL produced identical transcripts over 18 cycles."],
-        accent=GREEN, size=12, step=384048)
+        "Equivalent is not identical: three mux styles, 3, 6 and 10 cells.",
+        "Almost every block is a datapath and a controller. Here: 145 cells "
+        "against 10.",
+        "Write state machines in three blocks — register, next state, output.",
+        "Moore trails Mealy by exactly one cycle, and one-hot was BIGGER here.",
+        "parameter, hierarchy and generate are elaborated away before synthesis.",
+        "Verilog and VHDL produced identical transcripts, on both designs."],
+        accent=GREEN, size=10.5, step=310896)
 
     s = d.slide("CLOSE", "What To Do Next", accent=TEAL)
     y = d.image(s, TOP - 45720, "what_you_can_do", 4114800)

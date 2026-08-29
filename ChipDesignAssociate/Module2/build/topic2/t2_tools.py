@@ -206,7 +206,7 @@ def lab_map():
         y -= rh + 1.0
 
     box(ax, 3, 3.0, 94, 14.0, fc=LIGHT, ec=NAVY, lw=1.6)
-    ax.text(50, 13.6, "88 graded exercises, every one with a worked solution",
+    ax.text(50, 13.6, "103 graded exercises, every one with a worked solution",
             fontsize=9.4, color=NAVY, ha="center", fontweight="bold")
     ax.text(50, 8.6, "A-D build the mental model. E-H are the methodology, made "
                      "mechanical. I-L are the patterns every\nreal block is built "
@@ -222,26 +222,26 @@ def assessment():
     W, Hin = 11.5, 10.8
     f, ax = fig(W, Hin)
     H = 100 * Hin / W
-    title(ax, 50, H - 3, "How the 88 exercises are weighted", 13)
+    title(ax, 50, H - 3, "How the 103 exercises are weighted", 13)
 
-    rows = [["A · what RTL means", "5", "5%", "can you read a transfer as hardware"],
-            ["B · the ladder", "8", "8%", "same circuit, four notations"],
-            ["C · proof", "6", "7%", "why exhaustive testing stops working"],
-            ["D · the subset", "8", "9%", "prediction before measurement"],
-            ["E · sim vs silicon", "4", "5%", "explaining the mismatch precisely"],
-            ["F · coding rules", "8", "9%", "the rule, and the reason for it"],
+    rows = [["A · what RTL means", "6", "5%", "can you read a transfer as hardware"],
+            ["B · the ladder", "9", "8%", "same circuit, four notations"],
+            ["C · proof", "7", "7%", "why exhaustive testing stops working"],
+            ["D · the subset", "10", "9%", "prediction before measurement"],
+            ["E · sim vs silicon", "5", "5%", "explaining the mismatch precisely"],
+            ["F · coding rules", "10", "9%", "the rule, and the reason for it"],
             ["G · coding style", "5", "5%", "equivalent is not identical"],
-            ["H · the two pitfalls", "7", "8%", "what the code BUILDS, not what it "
+            ["H · the two pitfalls", "7", "7%", "what the code BUILDS, not what it "
              "says"],
             ["I · state machines", "12", "13%", "the three-block form, and Moore vs "
              "Mealy"],
-            ["J · controller + timer", "6", "7%", "writing a property, not reading a "
+            ["J · controller + timer", "6", "6%", "writing a property, not reading a "
              "waveform"],
             ["K · datapath/controller", "7", "8%", "where each signal belongs, and "
              "why"],
-            ["L · module to IP", "6", "7%", "elaboration against synthesis"],
-            ["M · two languages", "3", "4%", "reading VHDL without panic"],
-            ["N · the flow", "3", "5%", "evidence at every stage"]]
+            ["L · module to IP", "6", "6%", "elaboration against synthesis"],
+            ["M · two languages", "5", "5%", "reading VHDL without panic"],
+            ["N · the flow", "8", "7%", "evidence at every stage"]]
     table(ax, 3, H - 9.0, ["part", "exercises", "weight", "assessed on"],
           rows, [28, 15, 13, 38], 4.3, size=8.0, bold_col=[0])
 

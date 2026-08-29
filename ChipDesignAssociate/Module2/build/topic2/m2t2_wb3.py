@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Module 2 Topic 2 workbook — Part 4 tools, Part 5 the nine tutorials."""
+"""Module 2 Topic 2 workbook — Part 5 tools, Part 6 the fourteen tutorials."""
 import _boot
 from wbkit import *
 from m2t2_wb1 import B, N, I, M
@@ -7,9 +7,9 @@ from m2t2_wb1 import B, N, I, M
 
 def build(w):
     # ================================================================ Part 4
-    w.h1("Part 4 · Tools and Installation")
+    w.h1("Part 5 · Tools and Installation")
 
-    w.h2("4.1  Which tool answers which question")
+    w.h2("5.1  Which tool answers which question")
 
     w.image("tool_landscape", width=6.5)
 
@@ -20,7 +20,7 @@ def build(w):
            "a laptop.")],
     ], color=NAVY, bar="0E2A47")
 
-    w.h2("4.2  Installing")
+    w.h2("5.2  Installing")
 
     w.image("install_required", width=6.4)
 
@@ -46,12 +46,12 @@ def build(w):
            "were built in. Every number quoted in this workbook came from iverilog, "
            "ghdl and yosys, and every one is reproducible with "), M("make"), N(".")],
         [N("The commands shown for Vivado and ModelSim come from the vendor "
-           "documentation and are labelled as not executed here. Tutorial I asks you "
+           "documentation and are labelled as not executed here. Tutorial N asks you "
            "to run them and record what you get — which is itself a useful exercise "
            "in not trusting a number you did not produce.")],
     ], color=AMBER, fill="FFF7EC", bar="C77514")
 
-    w.h2("4.3  What the lab does with your RTL")
+    w.h2("5.3  What the lab does with your RTL")
 
     w.image("lab_flow", width=6.4)
 
@@ -63,7 +63,7 @@ def build(w):
     w.page_break()
 
     # ================================================================ Part 5
-    w.h1("Part 5 · Nine Guided Tutorials")
+    w.h1("Part 6 · Fourteen Guided Tutorials")
 
     w.callout("Before you start", [
         [N("Install the toolchain and open a terminal in "), M("Topic2_Lab/"),
@@ -284,13 +284,234 @@ def build(w):
     ], color=GREEN, fill="EEF7F1", bar="2A9D5C")
 
     # ------------------------------------------------------------------ G
-    w.h2("Tutorial G · Two languages  (1 hour)")
+    # ------------------------------------------------------------------ G
+    w.h2("Tutorial G · Coding style  (1 hour)")
+
+    w.para([N("Open "), M("rtl/mux4_styles.v"), N(". Three modules, one function. "
+              "Before running anything, write down which you think will produce the "
+              "fewest cells, and why.")])
+    w.code([
+        "$ make mux",
+        "  patterns checked : 64        mismatches : 0",
+        "  mux4_assign vs mux4_case      EQUIVALENT  (proved, 92 SAT variables)",
+        "  mux4_assign                     3 cells",
+        "  mux4_if                         6 cells",
+        "  mux4_case                      10 cells"])
+
+    w.h3("Try these")
+    w.bullets([
+        [N("Write a fourth style — a for loop over the data bits, say — and predict "
+           "where it lands before you measure.")],
+        [N("Rewrite mux4_case using sel as a bit index (y = d[sel];) and see whether "
+           "the tool now matches mux4_assign.")],
+        [N("Explain in two sentences why an equivalence proof cannot tell you which "
+           "of the three to ship.")],
+    ])
+
+    w.callout("Checkpoint G", [
+        [N("You can state precisely what a formal equivalence proof does and does "
+           "not tell you, and you have measured one case where coding style reached "
+           "the netlist.")],
+    ], color=GREEN, fill="EEF7F1", bar="2A9D5C")
+
+    # ------------------------------------------------------------------ H
+    w.h2("Tutorial H · The two pitfalls  (2 hours)")
+
+    w.para([N("These two account for most of the bugs a new RTL engineer files. "
+              "Neither is illegal; neither produces a warning.")])
+
+    w.h3("Step 1 — blocking assignment in a clocked block")
+    w.para([N("Open "), M("pitfalls/shift_nb.v"), N(" and "), M("pitfalls/shift_bl.v"),
+            N(". They differ by one character per line. Fill in the table below by "
+              "hand for the first six cycles of the stimulus, THEN run the lab.")])
+    w.code([
+        "$ make pitfalls",
+        "  non-blocking version : 0 wrong cycles",
+        "  blocking version     : 6 wrong cycles",
+        "  shift_nb (non-blocking)         3 cells     3 flip-flops",
+        "  shift_bl (blocking)             1 cells     1 flip-flops"])
+
+    w.h3("Step 2 — the inferred latch")
+    w.para([N("Synthesise "), M("subset/s03_latch.v"), N(" and "),
+            M("subset/s14_latch_case.v"), N(", and confirm the "), M("$_DLATCH_"),
+            N(" cell in each. Then fix each one — an else in the first, a default "
+              "in the second — and confirm it disappears.")])
+
+    w.h3("Try these")
+    w.bullets([
+        [N("Explain in two sentences why no tool warned about shift_bl.")],
+        [N("Write a combinational block with three outputs where only one is "
+           "latched, and predict the cell count before synthesising.")],
+        [N("Take one of your own files from Tutorial F and check it for both "
+           "pitfalls.")],
+    ])
+
+    w.callout("Checkpoint H", [
+        [N("You can look at a clocked block and say what it will BUILD rather than "
+           "what it appears to say, and you can spot an inferred latch in code "
+           "before a tool tells you about it.")],
+    ], color=GREEN, fill="EEF7F1", bar="2A9D5C")
+
+    # ------------------------------------------------------------------ I
+    w.h2("Tutorial I · State machines  (3 hours)")
+
+    w.para([N("The longest tutorial in the topic, and the most useful. Work through "
+              "it in order.")])
+
+    w.h3("Step 1 — read the three-block pattern")
+    w.para([N("Open "), M("fsm/seq101_moore.v"), N(". Identify the three blocks and, "
+              "for each one, say what would break if you moved a line into a "
+              "different block.")])
+
+    w.h3("Step 2 — run both styles against one stream")
+    w.code([
+        "$ make fsm",
+        "  matches in the stream : 5      mismatches vs golden  : 0",
+        "  PASS - same language, Moore trails Mealy by one cycle,",
+        "         and the one-hot encoding is indistinguishable",
+        "  seq101_moore  binary           13 cells     2 flip-flops",
+        "  seq101_moore  one-hot          30 cells     4 flip-flops",
+        "  seq101_mealy  binary           14 cells     2 flip-flops"])
+
+    w.h3("Step 3 — write one yourself")
+    w.para([N("Draw the state diagram for a "), B("'110' detector"), N(" with "
+              "overlaps counted, on paper, before writing any code. Then write it "
+              "in both styles, extend "), M("fsm/tb_seq101.v"), N(" to drive it, and "
+              "confirm the one-cycle offset holds for your machine too.")])
+
+    w.h3("Try these")
+    w.bullets([
+        [N("Re-encode the Moore machine as gray and measure the cells. Explain the "
+           "result.")],
+        [N("Delete the default assignment from the next-state block, re-run the "
+           "linter and then Yosys, and confirm the two agree about the latch.")],
+        [N("Add an illegal state to the Verilog machine by writing state <= 2'd7 in "
+           "a debug branch. Then try the equivalent in the VHDL version and record "
+           "what the analyser says.")],
+    ])
+
+    w.callout("Checkpoint I", [
+        [N("You can write a state machine in the three-block form without looking it "
+           "up, choose Moore or Mealy for a stated reason, and predict what a change "
+           "of encoding will cost.")],
+    ], color=GREEN, fill="EEF7F1", bar="2A9D5C")
+
+    # ------------------------------------------------------------------ J
+    w.h2("Tutorial J · A controller with a timer  (2 hours)")
+
+    w.para([N("Open "), M("fsm/traffic.v"), N(". Note that the phase length lives in "
+              "a down-counter, not in the state encoding — and that the state "
+              "machine asks it exactly one question.")])
+    w.code([
+        "$ make fsm",
+        "  cycles checked      : 40",
+        "  property violations : 0",
+        "  PASS - mutual exclusion and yellow-before-red both hold",
+        "  traffic controller             75 cells    10 flip-flops"])
+
+    w.h3("Step 1 — break it on purpose")
+    w.para([N("Remove the yellow phases and re-run. Property P2 should fire, and the "
+              "message should name the cycle. If it does not, your property is "
+              "written wrongly — which is itself the lesson.")])
+
+    w.h3("Step 2 — extend it")
+    w.para([N("Add a pedestrian request input that inserts an all-red phase. Then "
+              "add a third property: after a pedestrian request, an all-red phase "
+              "occurs within N cycles. Deciding what N should be is part of the "
+              "exercise.")])
+
+    w.callout("Checkpoint J", [
+        [N("You can write a property that fails when the design is wrong, and you "
+           "can explain why a phase timer belongs in the datapath rather than in the "
+           "state encoding.")],
+    ], color=GREEN, fill="EEF7F1", bar="2A9D5C")
+
+    # ------------------------------------------------------------------ K
+    w.h2("Tutorial K · Datapath and controller  (2 hours)")
+
+    w.para([N("Open "), M("rtl/datapath_ctrl.v"), N(". Three modules: a controller, "
+              "a datapath, and a parent that wires them together.")])
+    w.code([
+        "$ make dpctrl",
+        "  golden total : 157      hardware sum : 157",
+        "  accum_ctrl   (controller)      10 cells     2 flip-flops",
+        "  accum_datapath (datapath)     145 cells    24 flip-flops"])
+
+    w.h3("Step 1 — trace the control bundle")
+    w.para([N("The run prints every control signal on every cycle. For each of the "
+              "ten cycles, say which state the controller is in and why each signal "
+              "has the value it has.")])
+
+    w.h3("Step 2 — move a decision, and see what it costs")
+    w.para([N("Move the terminal-count test out of the datapath and into the "
+              "controller, so the controller holds the counter itself. It will "
+              "work. Then answer: what has the controller become dependent on that "
+              "it was not before, and what would now have to change if the sample "
+              "count went from 8 bits to 16?")])
+
+    w.h3("Try these")
+    w.bullets([
+        [N("Widen the datapath to 32-bit samples and confirm the controller needs "
+           "no edit at all.")],
+        [N("Add a valid/ready handshake on the sample input. Which half changes?")],
+    ])
+
+    w.callout("Checkpoint K", [
+        [N("Given a block description you can say which signals are control, which "
+           "are status and which are data, and justify each placement.")],
+    ], color=GREEN, fill="EEF7F1", bar="2A9D5C")
+
+    # ------------------------------------------------------------------ L
+    w.h2("Tutorial L · From a module to an IP  (2 hours)")
+
+    w.code([
+        "$ make reuse",
+        "  delayline mismatches : 0        prescaler ratio errors : 0",
+        "  delayline #(W=8, N) synthesised at four different depths:",
+        "    N = 1                           8 cells     8 flip-flops",
+        "    N = 2                          16 cells    16 flip-flops",
+        "    N = 4                          32 cells    32 flip-flops",
+        "    N = 8                          64 cells    64 flip-flops"])
+
+    w.h3("Try these")
+    w.bullets([
+        [N("Predict the cell count for N = 16 before running it.")],
+        [N("Add a bypass so that N = 0 removes the registers entirely and dout comes "
+           "straight from din. This is the exercise worth arguing about: a generate "
+           "loop with N = 0 builds nothing, so getting it right means understanding "
+           "that the parameter is resolved before any hardware exists.")],
+        [N("Instantiate counter_n three times to divide by 4096, and check the ratio "
+           "in simulation rather than assuming it.")],
+        [N("Write the three-line specification a colleague would need to use your "
+           "delayline without asking you anything. If it needs a fourth line, the "
+           "interface is wrong.")],
+    ])
+
+    w.callout("Checkpoint L", [
+        [N("You can parameterise a design so one file covers a family, and you can "
+           "say precisely which language features survive into the netlist and which "
+           "are elaborated away.")],
+    ], color=GREEN, fill="EEF7F1", bar="2A9D5C")
+
+    w.h2("Tutorial M · Two languages  (2 hours)")
 
     w.para([N("Open "), M("rtl/counter.v"), N(" and "), M("vhdl/counter.vhd"),
             N(" side by side and map every line of one onto the other. Then:")])
     w.code([
         "$ make langs",
-        "  IDENTICAL over all 18 cycles - including the wrap and the terminal count."])
+        "  IDENTICAL over all 18 cycles - including the wrap and the terminal count.",
+        "  IDENTICAL over all 17 cycles, detections included.   (the '101' detector)"])
+
+    w.para([N("Then do the same with "), M("fsm/seq101_moore.v"), N(" and "),
+            M("vhdl/seq101_moore.vhd"), N(". The state machine is the more "
+              "interesting comparison, because it is where the two languages "
+              "genuinely differ rather than merely differing in spelling.")])
+    w.code([
+        "// Verilog:  the states are NUMBERS you chose",
+        "localparam [1:0] S_IDLE = 2'd0, S_1 = 2'd1, S_10 = 2'd2, S_101 = 2'd3;",
+        "",
+        "-- VHDL:  the states are a TYPE, and nothing else can be assigned",
+        "type state_t is (S_IDLE, S_1, S_10, S_101);"])
 
     w.h3("Try these")
     w.bullets([
@@ -302,14 +523,14 @@ def build(w):
            "leave implicit, and say which you prefer and why.")],
     ])
 
-    w.callout("Checkpoint G", [
+    w.callout("Checkpoint M", [
         [N("You can read the VHDL counter without needing it translated, and name "
            "three concrete differences that are about notation rather than about "
            "hardware.")],
     ], color=GREEN, fill="EEF7F1", bar="2A9D5C")
 
-    # ------------------------------------------------------------------ H
-    w.h2("Tutorial H · The flow, end to end  (2 hours)")
+    # ------------------------------------------------------------------ N
+    w.h2("Tutorial N · The flow, end to end, and the vendor tools  (2 hours)")
 
     w.code([
         "$ make flow",
@@ -332,13 +553,12 @@ def build(w):
     w.para([N("Add a stage 8 of your own. A reasonable candidate: check that the "
               "netlist contains no latches, and fail if it does.")])
 
-    w.callout("Checkpoint H", [
+    w.callout("Checkpoint N1", [
         [N("You have seen every stage fail at least once, and you have added a stage "
            "that catches something the original seven did not.")],
     ], color=GREEN, fill="EEF7F1", bar="2A9D5C")
 
-    # ------------------------------------------------------------------ I
-    w.h2("Tutorial I · The vendor tools  (1 hour)")
+    w.h3("Step 3 — the same design in the vendor tools")
 
     w.image("vivado_flow", width=6.5)
 
@@ -347,7 +567,7 @@ def build(w):
               "utilisation report against the Yosys cell count, the ModelSim "
               "transcript against the iverilog one, and the overall runtime.")])
 
-    w.callout("Checkpoint I", [
+    w.callout("Checkpoint N2", [
         [N("You have run one design through both toolchains and can account for the "
            "differences — and you have noticed which parts of the vendor flow "
            "correspond exactly to steps you already ran for free.")],

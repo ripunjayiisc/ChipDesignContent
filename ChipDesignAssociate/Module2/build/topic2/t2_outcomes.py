@@ -143,7 +143,7 @@ def topic_structure():
              ("THEORY 3", "The patterns", "datapath and controller, the finite "
               "state machine, parameters and generate", AMBER),
              ("THEORY 4", "HDLs", "what an HDL is, and Verilog against VHDL", NAVY),
-             ("PRACTICAL", "Labs A-N", "26 hours, 88 exercises, all measured",
+             ("PRACTICAL", "Labs A-N", "26 hours, 103 exercises, all measured",
               GREEN)]
     y = H - 9.5
     rh = 8.6

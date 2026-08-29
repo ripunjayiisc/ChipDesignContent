@@ -26,7 +26,7 @@ def build(d):
          "Theory 3 · The patterns — datapath and controller, state machines, "
          "parameters and generate",
          "Theory 4 · HDLs — what one is, and Verilog against VHDL",
-         "Practical · Labs A–N · 26 hours · 88 exercises · every number measured"])
+         "Practical · Labs A–N · 26 hours · 103 exercises · every number measured"])
 
     # ==================================================== terminal outcomes
     s = d.slide("MODULE 2 · NOS NIE/ELE/N0102", "Terminal Outcomes")

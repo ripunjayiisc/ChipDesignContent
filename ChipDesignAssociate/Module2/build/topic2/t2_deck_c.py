@@ -79,18 +79,13 @@ def build(d):
 
     s = d.slide("4.6 · TWO LANGUAGES", "Both Designs, In Both Languages, Actually "
                 "Run")
-    y = d.image(s, TOP - 45720, "two_languages_result", 4297680)
-    y = d.card(s, y + G, "Not \"they look similar\"",
-               [[R("Both transcripts were compared line by line by diff and there "
-                   "was nothing to report: the counter over 18 cycles, and the "
-                   "Moore '101' detector over 17 — two languages, two different "
-                   "simulators, one design each.", s=10.5)]],
-               accent=GREEN, fill=CARD_G, h=822960)
-
-    d.lead(s, y + G, [[R("The state machine is the interesting one: VHDL gives the "
-                         "states a real enumerated TYPE, so an illegal state will "
-                         "not compile. Verilog gives them numbers.", b=True,
-                         c=NAVY, s=10.5)]], h=274320)
+    y = d.image(s, TOP - 45720, "two_languages_result", 4389120)
+    d.card(s, y + G, "Not \"they look similar\"",
+           [[R("Both transcripts were compared line by line by diff, and there was "
+               "nothing to report. The state machine is the interesting one: VHDL "
+               "gives the states a real enumerated TYPE, so an illegal state will "
+               "not compile. Verilog gives them numbers.", s=10.5)]],
+           accent=GREEN, fill=CARD_G, h=868680)
 
     s = d.slide("4.7 · WHICH ONE", "Which HDL Should You Learn?")
     y = d.image(s, TOP - 45720, "hdl_choose", 4937760)
@@ -119,7 +114,7 @@ def build(d):
     # ==================================================== PRACTICAL section
     d.section_slide(
         "PRACTICAL", "Labs A–N",
-        "26 hours, 88 graded exercises, and not one number in this deck that "
+        "26 hours, 103 graded exercises, and not one number in this deck that "
         "you cannot reproduce yourself.",
         ["Which tool answers which question, and how to install them",
          "Labs A–D: what RTL means, the ladder, proof, and the subset",
@@ -331,7 +326,7 @@ def build(d):
                          "here. Every number in this deck came from the free "
                          "toolchain.", b=True, c=AMBER, s=10.5)]], h=228600)
 
-    s = d.slide("LABS · ASSESSMENT", "How the 88 Exercises Are Weighted")
+    s = d.slide("LABS · ASSESSMENT", "How the 103 Exercises Are Weighted")
     y = d.image(s, TOP - 45720, "assessment", 5211445)
     d.lead(s, y + G, [[R("Predict, then measure. Being wrong and knowing why is the "
                          "whole point of a lab.", b=True, c=RED, s=10.5)]],

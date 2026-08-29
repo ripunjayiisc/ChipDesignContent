@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Module 2 Topic 2 workbook — 60 exercises, worked solutions, reference card."""
+"""Module 2 Topic 2 workbook — 103 exercises, worked solutions, reference card."""
 import _boot
 from wbkit import *
 from m2t2_wb1 import B, N, I, M
@@ -222,54 +222,259 @@ EX = [
      "why your change prevents it too, you have moved the problem rather than solved "
      "it."),
 
-    # ------------------------------------------------- G · two languages
-    ("G1", "C", "Run make langs. What exactly was compared, and by what?",
+    # --------------------------------------------------- G · coding style
+    ("G1", "H", "Before running make mux, predict which of the three mux styles "
+     "gives the fewest cells.",
+     "Most people predict all three are equal, on the grounds that the optimiser "
+     "flattens style. The measured answer is 3, 6 and 10 - the conditional "
+     "expression, the if/else chain and the case statement."),
+    ("G2", "W", "The three were PROVED equivalent and still gave different cell "
+     "counts. Is that a contradiction?",
+     "No. Equivalence is a statement about the function computed, and says nothing "
+     "about area, timing or power. Equivalent is not identical."),
+    ("G3", "W", "Explain, from the source, why the case version cost more.",
+     "The conditional expression hands sel[1] and sel[0] straight to the multiplexer "
+     "selects. The case version builds equality comparators against 2'b00, 2'b01 and "
+     "so on, and the tool then has to re-derive that those comparisons ARE the "
+     "select bits. On Yosys 0.33 it gets part of the way."),
+    ("G4", "C", "Rewrite mux4_case as y = d[sel]; and measure. What happened?",
+     "It should now match or beat mux4_assign, because a bit select IS a multiplexer "
+     "and the tool no longer has to reconstruct one. Record what you actually got - "
+     "the point of the exercise is the measurement, not the prediction."),
+    ("G5", "W", "So which style should you write, and when does the answer change?",
+     "Whichever reads best to the next person, which for more than three branches is "
+     "usually the case statement. The answer changes only when the block turns out "
+     "to be on a critical path, and then you measure rather than guess."),
+
+    # --------------------------------------------------- H · the two pitfalls
+    ("H1", "H", "For the first six cycles of the stimulus, write q_nb and q_bl by "
+     "hand before running make pitfalls.",
+     "q_nb is a three-cycle delay of din. q_bl equals din replicated into all three "
+     "bits, because each blocking assignment completes before the next reads it, so "
+     "din races to q[2] within one cycle."),
+    ("H2", "C", "Run it. How many cycles was each version wrong on?",
+     "Non-blocking: 0. Blocking: 6 of the 10 checked. The blocking version is only "
+     "right by accident, on the cycles where din happened not to change."),
+    ("H3", "C", "Synthesise both. How many flip-flops did each build?",
+     "Three and one. The blocking version did not build a slower or buggier shift "
+     "register - it built a different circuit."),
+    ("H4", "W", "Explain in two sentences why no tool warned about shift_bl.",
+     "Nothing illegal was written: blocking assignment in a clocked block is legal "
+     "Verilog with well-defined semantics. The code simply describes a circuit other "
+     "than the one the author had in mind, and no tool can know what was in the "
+     "author's mind."),
+    ("H5", "C", "Synthesise s03_latch.v, confirm the $_DLATCH_ cell, then add an "
+     "else and confirm it disappears.",
+     "One latch before, none after. The same holds for s14_latch_case.v with a "
+     "default added. Rules L005 and L006 predict both, and make lintcheck confirms "
+     "the prediction against Yosys."),
+    ("H6", "H", "Write a combinational block with three outputs where exactly one is "
+     "latched. Predict the netlist before synthesising.",
+     "Two of the three outputs should be pure logic and the third a $_DLATCH_. The "
+     "usual mistake is to assume the latch infects the whole block; it does not - "
+     "inference is per signal, per path."),
+    ("H7", "W", "Both pitfalls are legal code that builds the wrong circuit. What "
+     "does that tell you about relying on tool warnings?",
+     "That warnings catch what the tool can prove is suspicious, which is a much "
+     "smaller set than what is wrong. A methodology rule, checked mechanically, "
+     "covers the rest - which is why the coding rules exist and why a linter runs "
+     "before simulation."),
+
+    # ------------------------------------------------- I · state machines
+    ("I1", "H", "Name the three blocks of the standard FSM pattern and say what each "
+     "one is for.",
+     "Block 1, the state register: sequential, non-blocking, the only place a clock "
+     "or reset appears. Block 2, next-state logic: combinational, a pure function of "
+     "state and inputs. Block 3, output logic: combinational, reading the state (and "
+     "the input too, if the machine is Mealy)."),
+    ("I2", "W", "What would break if you moved the reset out of block 1?",
+     "Nothing would work. Reset is by definition a sequential behaviour - it sets "
+     "the value the register holds. Putting it in a combinational block would either "
+     "do nothing or infer a latch."),
+    ("I3", "H", "Why does the default assignment at the top of block 2 prevent a "
+     "latch?",
+     "Because next_state is written unconditionally before any branch runs, so no "
+     "path through the block leaves it unassigned, whatever the case statement "
+     "covers or omits."),
+    ("I4", "C", "Delete that default assignment, run the linter, then run Yosys. Do "
+     "they agree?",
+     "They should: the linter raises L005 or L006 and Yosys builds a $_DLATCH_. "
+     "make lintcheck automates exactly this comparison over sixteen designs."),
+    ("I5", "H", "Draw the state diagram for a '110' detector with overlaps counted, "
+     "before writing any code.",
+     "Four states for Moore: idle, seen 1, seen 11, seen 110 (accepting). From the "
+     "accepting state a 1 goes to 'seen 1' and a 0 goes back to idle. Three states "
+     "for Mealy, with the output on the arc out of 'seen 11' on a 0."),
+    ("I6", "C", "Write it in both styles and confirm the one-cycle offset holds.",
+     "It must, for any machine: a Moore output is decoded from a register, so it "
+     "cannot appear until the edge after the input that caused it."),
+    ("I7", "C", "Run make fsm. How many matches in the stream, and how many "
+     "mismatches against the golden model?",
+     "Five matches, zero mismatches - for the Moore machine, the Mealy machine and "
+     "the one-hot encoding alike."),
+    ("I8", "W", "The golden model is computed from the stream rather than from "
+     "either machine. Why does that matter?",
+     "Because a model derived from the design under test passes whatever the design "
+     "does. Computing it from the stimulus is what makes the test capable of "
+     "failing."),
+    ("I9", "H", "Which machine has more states, and which asserts its output "
+     "sooner?",
+     "Moore has more states - it needs one whose only job is to say 'a match just "
+     "finished'. Mealy asserts sooner, in the same cycle as the final input bit."),
+    ("I10", "W", "When would you choose Moore even though it costs a cycle?",
+     "When the output leaves the block, drives other logic, or is timing critical. "
+     "A Moore output is a decode of registered bits, so it is glitch-free and easy "
+     "to constrain; a Mealy output inherits whatever the input does, glitches "
+     "included."),
+    ("I11", "C", "Synthesise the binary and one-hot Moore machines. Which is bigger, "
+     "and why?",
+     "One-hot: 30 cells and 4 flip-flops against 13 and 2. Four states need four "
+     "flip-flops instead of two, and the next-state logic drives four bits instead "
+     "of two. One-hot pays off on an FPGA and as the state count rises, not here."),
+    ("I12", "C", "Re-encode the Moore machine as gray and measure. Explain the "
+     "result.",
+     "With four states gray is a permutation of binary, so expect the same two "
+     "flip-flops and a cell count within a cell or two either way. Gray earns its "
+     "keep when the state vector crosses a clock domain, not when it is decoded "
+     "locally."),
+
+    # ------------------------------------------- J · a controller with a timer
+    ("J1", "H", "The green phase lasts six cycles. Why is that not six states?",
+     "Because the number of states would then depend on the timing, and a "
+     "six-hundred-cycle phase would be impossible. The count belongs in a "
+     "down-counter, and the state machine asks it one question: are you at zero?"),
+    ("J2", "C", "Run make fsm. How many cycles were checked and how many properties "
+     "were violated?",
+     "Forty cycles, zero violations - and the properties are checked on every one of "
+     "them, not sampled."),
+    ("J3", "C", "Remove the yellow phases and re-run. What happens?",
+     "Property P2 fires and names the cycle. If it does not, the property was "
+     "written wrongly - which is worth discovering now rather than on a design where "
+     "you cannot check by hand."),
+    ("J4", "H", "Write the property that says the two roads are never both green.",
+     "if (main_light == GREEN && side_light == GREEN) then flag an error. It is one "
+     "line, it runs every cycle, and it keeps working after you change the design."),
+    ("J5", "W", "Why is a property better evidence than a waveform you inspected?",
+     "Because it scales past the ten or so cycles a human can read, it runs again "
+     "every time the design changes, and it states the requirement in a form a "
+     "reviewer can check against the specification."),
+    ("J6", "C", "Add a pedestrian request that inserts an all-red phase, and a third "
+     "property to go with it.",
+     "A reasonable property: after a pedestrian request, an all-red phase begins "
+     "within N cycles. Choosing N is part of the exercise, and it forces you to "
+     "state a requirement the original specification left vague."),
+
+    # --------------------------------------------- K · datapath and controller
+    ("K1", "H", "Name the two halves of the accumulator and say what crosses between "
+     "them.",
+     "A datapath - accumulator and down-counter - and a controller of three states. "
+     "Four control signals go down (acc_clr, acc_en, cnt_ld, cnt_dec) and one status "
+     "signal comes up (cnt_done)."),
+    ("K2", "C", "Run make dpctrl. For each of the ten cycles, say which state the "
+     "controller is in and why each control signal has its value.",
+     "Cycle 0 is S_IDLE with start high, so acc_clr and cnt_ld are asserted. Cycles "
+     "1-6 are S_RUN with cnt_done low, so acc_en and cnt_dec are asserted. Cycle 7 "
+     "is S_RUN with cnt_done high, so nothing is asserted. Cycle 8 is S_DONE."),
+    ("K3", "C", "What were the cell counts for the two halves?",
+     "10 cells and 2 flip-flops for the controller; 145 cells and 24 flip-flops for "
+     "the datapath. Six per cent of the area holds all of the behaviour."),
+    ("K4", "C", "Widen the datapath to 32-bit samples. What had to change in the "
+     "controller?",
+     "Nothing. That is the property the split exists to give you, and it is worth "
+     "verifying rather than assuming."),
+    ("K5", "W", "Move the terminal-count test into the controller. It still works - "
+     "so what did you lose?",
+     "The controller is now width-dependent: change the maximum sample count and you "
+     "edit the state machine. Passing up a single status bit instead means the "
+     "controller never changes at all."),
+    ("K6", "H", "Classify each of start, done, sum, acc_en and cnt_done as control, "
+     "status, data or interface.",
+     "start and done are the block's interface (a handshake). sum is data. acc_en is "
+     "control, controller to datapath. cnt_done is status, datapath to controller."),
+    ("K7", "W", "The latency is N + 3 clocks. Derive it rather than measuring it.",
+     "One cycle to accept the request, N to accumulate one sample each, one to "
+     "notice the counter reached zero, one to flag it. The derivation holds for "
+     "every N, which is why a testbench that only tries N = 6 has told you almost "
+     "nothing."),
+
+    # -------------------------------------------------- L · from module to IP
+    ("L1", "H", "Name the three features that turn a module into reusable IP, and "
+     "say when each one disappears.",
+     "parameter and generate are elaborated away before synthesis; hierarchy "
+     "survives until the tool flattens, if it flattens at all. None of the three "
+     "exists in the final netlist."),
+    ("L2", "C", "Run make reuse. What is the flip-flop count for each of N = 1, 2, 4 "
+     "and 8?",
+     "8, 16, 32 and 64 - eight per stage, exactly N stages, linear. There is no loop "
+     "anywhere in the netlist."),
+    ("L3", "H", "Predict the cell count for N = 16, then check it.",
+     "128 cells and 128 flip-flops. If your prediction was different, look again at "
+     "what the generate loop actually instantiates."),
+    ("L4", "C", "Add a bypass so that N = 0 removes the registers entirely and dout "
+     "comes straight from din.",
+     "A generate loop with N = 0 builds nothing, so tap[0] is already tap[N] and "
+     "dout = din falls out naturally - but only if the array and the assignment are "
+     "written so that N = 0 is legal. Getting this right means understanding that "
+     "the parameter is resolved before any hardware exists."),
+    ("L5", "C", "Instantiate counter_n three times to divide by 4096, and check the "
+     "ratio in simulation.",
+     "Three four-bit counters cascaded on their terminal counts give 16 x 16 x 16 = "
+     "4096. Check it rather than assuming: the usual bug is enabling the second "
+     "stage on the first stage's carry-out level rather than its one-cycle pulse."),
+    ("L6", "W", "Write the three-line specification a colleague would need to use "
+     "your delayline without asking you anything.",
+     "Width, depth, and the reset and enable semantics - what happens when en is "
+     "low, and whether rst is synchronous. If it needs a fourth line, the interface "
+     "is doing something surprising and should be changed rather than documented."),
+
+    # --------------------------------------------------- M · two languages
+    ("M1", "C", "Run make langs. What exactly was compared, and by what?",
      "The Verilog transcript from iverilog and the VHDL transcript from ghdl, "
      "compared line by line by diff. Identical over all 18 cycles."),
-    ("G2", "H", "Name three things VHDL made explicit that Verilog left implicit.",
+    ("M2", "H", "Name three things VHDL made explicit that Verilog left implicit.",
      "Library and package declarations; the separation of entity from architecture; "
      "type conversions between unsigned and std_logic_vector. Verilog would have let "
      "you add 1 to anything."),
-    ("G3", "C", "Change the width to 8 in both files. Which needed more editing?",
+    ("M3", "C", "Change the width to 8 in both files. Which needed more editing?",
      "Neither, if both were parameterised properly - which is the point of the "
      "exercise. If yours needed more editing in one language, that file was not as "
      "reusable as it looked."),
-    ("G4", "W", "Your colleague only knows VHDL. What can they read of your Verilog?",
+    ("M4", "W", "Your colleague only knows VHDL. What can they read of your Verilog?",
      "Almost all of it: the clocked process, the reset, the enable, the vector, the "
      "wrap. What will need explaining is notation - blocking against non-blocking, "
      "what reg means, and case sensitivity."),
-    ("G5", "W", "Which language should someone starting today learn?",
+    ("M5", "W", "Which language should someone starting today learn?",
      "The concepts first; the notation follows in an afternoon. In practice, whichever "
      "one the team uses - and expect to read the other. Large projects routinely mix "
      "them in one flow."),
 
-    # ------------------------------------------------------- H · the flow
-    ("H1", "C", "Run make flow. What evidence does each of the seven stages produce?",
+    # --------------------------------------------------------- N · the flow
+    ("N1", "C", "Run make flow. What evidence does each of the seven stages produce?",
      "Spec: four sentences. Lint: 0 issues. RTL sim: 18 cycles with the wrap checked. "
      "Synthesis: 12 cells. Gate sim: 18 cycles. Compare: identical. Prove: "
      "equivalence by induction."),
-    ("H2", "C", "Introduce a lint violation and confirm the flow stops at stage 2.",
+    ("N2", "C", "Introduce a lint violation and confirm the flow stops at stage 2.",
      "It should. A methodology in which a failing stage does not stop the flow is a "
      "checklist people tick, not a set of gates."),
-    ("H3", "C", "Break the counter's wrap and see which stage catches it.",
+    ("N3", "C", "Break the counter's wrap and see which stage catches it.",
      "Stage 3, the RTL simulation, because the spec said it must wrap and the "
      "transcript is checked against that."),
-    ("H4", "C", "Find a change that passes stages 2 and 3 but fails stage 7.",
+    ("N4", "C", "Find a change that passes stages 2 and 3 but fails stage 7.",
      "Anything that is functionally correct on the stimulus applied but not "
      "equivalent in general - for example a reset that is asynchronous in the RTL and "
      "synchronous in the netlist, or a wrap condition that differs only in a state "
      "the 18-cycle test never reaches."),
-    ("H5", "W", "Stage 6 and stage 7 both compare the RTL with the netlist. What is "
+    ("N5", "W", "Stage 6 and stage 7 both compare the RTL with the netlist. What is "
      "the difference?",
      "Stage 6 compares them on the 18 cycles that were tested. Stage 7 proves they "
      "agree on every input sequence, by induction, without enumerating any."),
-    ("H6", "C", "Add a stage 8 that fails if the netlist contains any latch.",
+    ("N6", "C", "Add a stage 8 that fails if the netlist contains any latch.",
      "Grep the JSON for DLATCH, or count $_DLATCH_ cells and exit non-zero if the "
      "count is not zero. This is a real check that real teams run."),
-    ("H7", "W", "Why is 'a stage that produces no evidence' a problem?",
+    ("N7", "W", "Why is 'a stage that produces no evidence' a problem?",
      "Because nobody can tell whether it was run. A methodology is auditable only if "
      "each stage leaves something behind that a reviewer can look at."),
-    ("H8", "W", "Which stage would you add next, and why?",
+    ("N8", "W", "Which stage would you add next, and why?",
      "Reasonable answers: code coverage on the RTL simulation; a check that every "
      "output is driven; a constraint check; a second synthesis with different options "
      "to detect fragility. Any answer that names the bug the stage would catch."),
@@ -297,8 +502,14 @@ def build_exercises(w):
         "D": ("Part D · The synthesisable subset", "10 exercises · 2 hours"),
         "E": ("Part E · Simulation against silicon", "5 exercises · 1 hour"),
         "F": ("Part F · The coding rules", "10 exercises · 2 hours"),
-        "G": ("Part G · Two languages", "5 exercises · 1 hour"),
-        "H": ("Part H · The flow, end to end", "8 exercises · 2 hours"),
+        "G": ("Part G · Coding style", "5 exercises · 1 hour"),
+        "H": ("Part H · The two pitfalls", "7 exercises · 2 hours"),
+        "I": ("Part I · State machines", "12 exercises · 3 hours"),
+        "J": ("Part J · A controller with a timer", "6 exercises · 2 hours"),
+        "K": ("Part K · Datapath and controller", "7 exercises · 2 hours"),
+        "L": ("Part L · From a module to an IP", "6 exercises · 2 hours"),
+        "M": ("Part M · Two languages", "5 exercises · 2 hours"),
+        "N": ("Part N · The flow, and the vendor tools", "8 exercises · 2 hours"),
     }
     cur = None
     for eid, tag, q, _ in EX:
@@ -366,6 +577,40 @@ def build_reference(w):
               "descend takes a decision away from the tool and gives it to you.",
               {"b": True, "s": 10})])
 
+    w.h2("The three-block state machine")
+    w.code([
+        "always @(posedge clk or negedge rst_n)      // BLOCK 1  state register",
+        "    if (!rst_n) state <= S_IDLE;            //   sequential, <=",
+        "    else        state <= next_state;        //   reset lives HERE only",
+        "",
+        "always @(*) begin                           // BLOCK 2  next-state logic",
+        "    next_state = state;                     //   THE DEFAULT ASSIGNMENT",
+        "    case (state) ... endcase                //   combinational, =",
+        "end",
+        "",
+        "always @(*) begin                           // BLOCK 3  output logic",
+        "    out = 1'b0;                             //   defaults again",
+        "    case (state) ... endcase                //   state only => MOORE",
+        "end                                         //   state + input => MEALY"])
+
+    w.h2("Moore and Mealy")
+    w.table(["", "Moore", "Mealy"],
+            [["output depends on", "state only", "state and input"],
+             ["output appears", "one cycle after the input", "the same cycle"],
+             ["output glitches", "no", "yes - inherits the input's"],
+             ["measured here", "13 cells, 2 flops", "14 cells, 2 flops"]],
+            widths=[1.5, 2.5, 2.8], size=9.2, bold_cols=(0,), align_center=False)
+
+    w.h2("Datapath and controller")
+    w.code([
+        "CONTROLLER   a state machine.  Narrow.  All the decisions.",
+        "DATAPATH     registers, adders, muxes.  Wide.  No decisions.",
+        "",
+        "control signals go DOWN   acc_clr  acc_en  cnt_ld  cnt_dec",
+        "status  signals come UP   cnt_done",
+        "",
+        "measured on the accumulator:  controller 10 cells, datapath 145 cells."])
+
     w.h2("The seven coding rules")
     w.table(["Rule", "What it catches"],
             [["L001", "blocking (=) in a clocked block - use <="],
@@ -396,15 +641,22 @@ def build_reference(w):
         "make transfer   what register transfer level literally means",
         "make ladder     one adder at four levels, all simulated together",
         "make prove      formal proof that those levels are the same circuit",
+        "make mux        one function, three styles: proved, then measured",
         "make subset     which constructs synthesise, and what they cost",
         "make mismatch   RTL and its own netlist, disagreeing",
+        "make pitfalls   the inferred latch and the blocking-assignment trap",
         "make lint       the seven rules, checked",
         "make lintcheck  and cross-checked against what Yosys builds",
-        "make langs      the same design in Verilog and VHDL, both run",
+        "make fsm        Moore, Mealy, encoding, and a controller with a timer",
+        "make dpctrl     datapath + controller, every control signal per cycle",
+        "make reuse      parameters, hierarchy and generate, measured at 4 depths",
+        "make langs      counter and FSM, in Verilog and VHDL, both run",
         "make flow       the whole methodology: spec to formal proof",
+        "make            all of the above, in order",
         "",
         "python3 tools/rtl_lint.py <file.v> ...",
-        "./scripts/equiv.sh fileA.v topA fileB.v topB"])
+        "./scripts/equiv.sh fileA.v topA fileB.v topB",
+        "./scripts/stat.sh <label> <top> <file.v>       cells and flip-flops"])
 
     w.callout("The three sentences to leave with", [
         [B("1.  "), N("RTL says which registers exist and what transfers into them. "
@@ -414,4 +666,8 @@ def build_reference(w):
         [B("3.  "), N("The dangerous bugs are the ones where the simulation and the "
                       "silicon are not the same circuit. Every coding rule in this "
                       "topic exists to prevent one of them.")],
+        [B("4.  "), N("Almost every block is a datapath and a controller, and almost "
+                      "every controller is a state machine written in three blocks. "
+                      "Learn those two shapes and most designs stop looking "
+                      "unfamiliar.")],
     ], color=RED, fill="FDECEF", bar="D6224A")

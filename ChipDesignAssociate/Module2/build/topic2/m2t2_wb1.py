@@ -38,7 +38,7 @@ def build(w):
     p.paragraph_format.space_after = Pt(10)
     w.para([N("A self-study companion to the Topic 2 slide deck. It explains every "
               "concept the deck introduces and why it exists, walks you through nine "
-              "guided tutorials at the keyboard, and ends with 60 graded exercises "
+              "guided tutorials at the keyboard, and ends with 103 graded exercises "
               "and full worked solutions. Every number quoted here was produced by "
               "running the code in Topic2_Lab/. Nothing in this workbook requires you "
               "to look anything up elsewhere.", {"s": 10.5})])
@@ -92,29 +92,43 @@ def build(w):
 
     w.callout("Each outcome is assessed by a command you run", [
         [M("make transfer, make ladder"), N("   →  what RTL means, and abstraction")],
-        [M("make prove"), N("            →  equivalence, and why testing runs out")],
+        [M("make prove, make mux"), N("        →  equivalence, and what it does NOT "
+           "tell you")],
         [M("make subset, make mismatch"),
          N("  →  the synthesisable subset, and its traps")],
+        [M("make pitfalls"), N("             →  the latch and the blocking trap, "
+           "measured")],
         [M("make lint, make lintcheck"), N("   →  the coding standard, mechanised")],
-        [M("make langs"), N("            →  Verilog or VHDL")],
-        [M("make flow"), N("             →  the whole methodology, end to end")],
+        [M("make fsm"), N("                  →  state machines, both styles, both "
+           "encodings")],
+        [M("make dpctrl"), N("               →  datapath and controller")],
+        [M("make reuse"), N("                →  parameters, hierarchy and generate")],
+        [M("make langs"), N("                →  Verilog or VHDL, on two designs")],
+        [M("make flow"), N("                 →  the whole methodology, end to end")],
     ], color=GREEN, fill="EEF7F1", bar="2A9D5C")
 
     w.callout("What's inside", [
         [B("THEORY"), N("")],
-        [B("Part 1  "), N("What RTL is — registers and transfers, blocking against "
-                          "non-blocking, four levels of abstraction, and proof")],
+        [B("Part 1  "), N("What RTL is — the two kinds of logic, the synchronous "
+                          "discipline, registers and transfers, blocking against "
+                          "non-blocking, four levels of abstraction, proof, and the "
+                          "running example")],
         [B("Part 2  "), N("The design process and methodology — the flow, the "
                           "synthesisable subset, inferred latches, the "
                           "simulate/synthesise mismatch, seven coding rules, "
-                          "micro-architecture and reuse")],
-        [B("Part 3  "), N("HDLs — why an HDL is not a programming language, "
+                          "micro-architecture, reuse and coding style")],
+        [B("Part 3  "), N("The patterns every block is built from — datapath and "
+                          "controller, the finite state machine, Moore against "
+                          "Mealy, state encoding, and parameters, hierarchy and "
+                          "generate")],
+        [B("Part 4  "), N("HDLs — why an HDL is not a programming language, "
                           "concurrency, the anatomy of a module, event-driven "
-                          "simulation, and Verilog against VHDL")],
+                          "simulation, Verilog against VHDL, reference cards, and "
+                          "what a testbench is made of")],
         [B("PRACTICAL"), N("")],
-        [B("Part 4  "), N("Tools and installation")],
-        [B("Part 5  "), N("Nine guided tutorials, A to I, at the keyboard")],
-        [B("Exercises  "), N("60 graded exercises with worked solutions")],
+        [B("Part 5  "), N("Tools and installation")],
+        [B("Part 6  "), N("Fourteen guided tutorials, A to N, at the keyboard")],
+        [B("Exercises  "), N("103 graded exercises with worked solutions")],
         [B("Reference  "), N("The rules, the subset, and the commands, on two pages")],
     ], color=NAVY, bar="0E2A47")
 
@@ -161,7 +175,7 @@ def build(w):
     w.para([N("Read that block as a "), B("table"), N(", not as a sequence. All four "
               "assignments read the OLD values of x, y, z and acc, and all four land "
               "at the same instant. That is what "), M("<="), N(" means, and section "
-              "1.3 is about why it has to work that way.")])
+              "1.5 is about why it has to work that way.")])
 
     w.h3("Watch it happen")
     w.image("rtl_transfer_trace", width=6.4)
@@ -171,7 +185,100 @@ def build(w):
               "timing model of RTL, and it is why RTL is tractable to reason about "
               "where a gate-level netlist is not.")])
 
-    w.h2("1.2  Why anyone designs at this level")
+    w.h2("1.2  The two kinds of logic, and there is no third")
+
+    w.image("comb_vs_seq", width=6.4)
+
+    w.para([N("Every digital block ever built is some arrangement of two kinds of "
+              "logic. Learning to see which one you are looking at is the first "
+              "skill this topic asks for, because almost every rule that follows "
+              "applies to one and not the other.")])
+
+    w.h3("Combinational")
+    w.para([N("The output is a function of the inputs "), B("right now"),
+            N(". No clock, no memory, no history. Change an input and the output "
+              "follows after a propagation delay, and that is the whole story.")])
+    w.code([
+        "assign y = a & b;                 // continuous assignment",
+        "",
+        "always @(*) begin                 // or a combinational always block",
+        "    y = a & b;                    // BLOCKING assignment",
+        "end"])
+    w.para([N("The thing that goes wrong here is the "), B("inferred latch"),
+            N(" — a path through the block on which some output is never assigned, "
+              "so the tool has to build something that remembers. Section 2.3 is "
+              "about that, and it is the single most common RTL bug there is.")])
+
+    w.h3("Sequential")
+    w.para([N("The output depends on the inputs "), B("and on the past"),
+            N(". A flip-flop samples its input at one instant — the clock edge — and "
+              "holds that value until the next edge, whatever the input does in "
+              "between.")])
+    w.code([
+        "always @(posedge clk or negedge rst_n) begin",
+        "    if (!rst_n) q <= 1'b0;        // reset appears HERE and nowhere else",
+        "    else        q <= d;           // NON-BLOCKING assignment",
+        "end"])
+    w.para([N("The things that go wrong here are timing failures: the data arrives "
+              "too late for the edge (a setup violation) or changes too soon after "
+              "it (a hold violation). Neither is visible in an RTL simulation, which "
+              "is why static timing analysis exists — and why it is Topic 6.")])
+
+    w.callout("The whole of RTL design, in one sentence", [
+        [N("Deciding what goes in the registers, and what happens between them.")],
+        [N("That is not a slogan. It is literally what the letters R, T and L stand "
+           "for, and if you can answer those two questions about a block you can "
+           "write it.")],
+    ], color=GREEN, fill="EEF7F1", bar="2A9D5C")
+
+    w.h2("1.3  The synchronous discipline")
+
+    w.image("sync_design", width=6.4)
+
+    w.para([N("Almost every rule in this topic — and most of the rules in Topics 5 "
+              "and 6 — is a consequence of one decision: "), B("one clock, one edge, "
+              "everything"), N(". It is worth stating the discipline explicitly, "
+              "because a design that has drifted out of it fails in ways that are "
+              "very hard to diagnose.")])
+
+    w.table(["The rule", "What it means", "Why"],
+            [["one clock edge", "every register samples at the same instant",
+              "so 'now' means the same thing everywhere"],
+             ["one reset policy", "sync or async, active high or low — pick one",
+              "so nobody has to look it up per module"],
+             ["no logic on the clock", "no gated clocks, no ripple clocks",
+              "so timing analysis has one thing to analyse"],
+             ["no latches", "assign every output on every path",
+              "so timing is edge-to-edge, not level-dependent"],
+             ["registered outputs", "a block's outputs come out of flip-flops",
+              "so a slow path never crosses two blocks"]],
+            widths=[1.5, 2.6, 2.7], size=9.0, bold_cols=(0,), align_center=False)
+
+    w.h3("What the discipline buys you")
+    w.bullets([
+        [B("Analysable. "), N("With one clock and one edge, timing analysis is a "
+           "finite question: for every path from a flip-flop to a flip-flop, does "
+           "the data arrive in time? Add a gated clock and the question multiplies.")],
+        [B("Composable. "), N("Two blocks written to the same discipline can be "
+           "wired together without a conversation. Two blocks written to different "
+           "disciplines need one, every time.")],
+        [B("Reviewable. "), N("A reviewer can read your block for what it computes, "
+           "because the question of WHEN has already been answered the same way it "
+           "always is.")],
+        [B("Testable. "), N("Scan insertion — the technique that makes a chip "
+           "testable after manufacture — assumes edge-triggered flip-flops on one "
+           "clock. Latches and gated clocks each need special handling.")],
+    ])
+
+    w.callout("You are allowed to break these rules", [
+        [N("Clock gating and multiple clock domains are real techniques, used in "
+           "every serious design. What makes them safe is that they are "),
+         B("deliberate"), N(": chosen, reviewed, constrained and documented.")],
+        [N("What is not safe is a design that drifted out of the discipline because "
+           "nobody noticed. You are not allowed to break these rules by accident.")],
+    ], color=AMBER, fill="FFF7EC", bar="C77514")
+
+    w.h2("1.4  Why anyone designs at this level")
 
     w.table(["", "Behavioural", "RTL", "Gate netlist"],
             [["you write", "the algorithm", "registers and transfers", "every gate"],
@@ -194,7 +301,7 @@ def build(w):
            "abstraction pays for itself.")],
     ], color=TEAL)
 
-    w.h2("1.3  Blocking and non-blocking assignment")
+    w.h2("1.5  Blocking and non-blocking assignment")
 
     w.image("nonblocking", width=6.4)
 
@@ -232,7 +339,44 @@ def build(w):
               "simulation and the silicon disagree. Rules L001 and L002 of the linter "
               "in this lab catch both directions.")])
 
-    w.h2("1.4  Four levels of abstraction")
+    w.h3("And what each one actually builds")
+
+    w.image("blocking_measured", width=6.4)
+
+    w.para([N("The argument above is about semantics. Here is the same argument as a "
+              "measurement. Two files, identical apart from one character per line:")])
+
+    w.code([
+        "// shift_nb.v - the intended 3-stage shift register",
+        "always @(posedge clk) begin",
+        "    q[0] <= din;   q[1] <= q[0];   q[2] <= q[1];",
+        "end",
+        "",
+        "// shift_bl.v - the same three lines with =",
+        "always @(posedge clk) begin",
+        "    q[0] = din;    q[1] = q[0];    q[2] = q[1];",
+        "end"])
+
+    w.code([
+        "$ make pitfalls",
+        "  non-blocking version : 0 wrong cycles",
+        "  blocking version     : 6 wrong cycles",
+        "",
+        "  shift_nb (non-blocking)         3 cells     3 flip-flops",
+        "  shift_bl (blocking)             1 cells     1 flip-flops"])
+
+    w.callout("Three flip-flops against one", [
+        [N("The blocking version did not build a slower shift register, or a buggy "
+           "one. It built a "), B("different circuit"), N(" — din races all the way "
+           "to q[2] in a single clock cycle, because q[0] already holds the new "
+           "value when line two reads it.")],
+        [N("It compiled. It simulated. It synthesised. No tool issued a single "
+           "warning, because nothing illegal was written. This is exactly the class "
+           "of bug a methodology rule exists to prevent, and rule L001 catches it in "
+           "about a millisecond.")],
+    ], color=RED, fill="FDECEF", bar="D6224A")
+
+    w.h2("1.6  Four levels of abstraction")
 
     w.image("ladder", width=6.5)
 
@@ -285,7 +429,7 @@ def build(w):
            "keep the second.")],
     ], color=GREEN, fill="EEF7F1", bar="2A9D5C")
 
-    w.h2("1.5  Simulation shows; proof settles")
+    w.h2("1.7  Simulation shows; proof settles")
 
     w.image("proof_vs_test", width=6.4)
 
@@ -314,13 +458,82 @@ def build(w):
            "you cannot check by hand.")],
     ], color=RED, fill="FDECEF", bar="D6224A")
 
+    w.h2("1.8  The running example")
+
+    w.image("running_example", width=6.4)
+
+    w.para([N("One design is carried through the rest of this workbook: a four-bit "
+              "counter with an asynchronous reset, an enable and a terminal-count "
+              "output. It is small enough to hold in your head and real enough to "
+              "have every decision a real design has.")])
+
+    w.code([
+        "module counter4 (",
+        "    input            clk,",
+        "    input            rst_n,      // asynchronous, active LOW",
+        "    input            en,",
+        "    output reg [3:0] count,",
+        "    output           tc          // one cycle high at 15",
+        ");",
+        "    always @(posedge clk or negedge rst_n) begin",
+        "        if (!rst_n)     count <= 4'd0;",
+        "        else if (en)    count <= count + 4'd1;",
+        "    end",
+        "",
+        "    assign tc = en & (count == 4'd15);",
+        "endmodule"],
+        caption="rtl/counter4.v")
+
+    w.h3("Four decisions are visible in fourteen lines")
+    w.bullets([
+        [B("The reset is asynchronous. "), N("That is why negedge rst_n is in the "
+           "sensitivity list. A synchronous reset would not be — it would just be "
+           "the first test inside the block.")],
+        [B("The reset is active low. "), N("That is why the port is named rst_n and "
+           "the test is !rst_n. Naming the polarity in the signal name is a "
+           "convention worth keeping: it makes a wrong connection visible in the "
+           "instantiation.")],
+        [B("Reset is tested first. "), N("It therefore wins over the enable. Written "
+           "the other way round, a reset arriving while en was low would be "
+           "ignored.")],
+        [B("There is no else on the enable. "), N("This is deliberate, and it is the "
+           "one case where a missing else is correct: in a CLOCKED block, no "
+           "assignment means hold, which is exactly what a flip-flop does. The same "
+           "omission in a combinational block would build a latch.")],
+    ])
+
+    w.h3("The numbers, worked out")
+
+    w.image("numerical_example", width=6.4)
+
+    w.para([N("Run the arithmetic before you run the simulator. At 100 MHz the clock "
+              "period is 10 ns, the counter has 2"), N("\u2074"), N(" = 16 states, so "
+              "one full cycle takes 160 ns and "), M("tc"), N(" pulses at 6.25 MHz "
+              "for exactly one clock period. Every one of those numbers is "
+              "predictable from the source without running anything, and being able "
+              "to do that is most of what design review is.")])
+
+    w.callout("Where the running example goes next", [
+        [B("Part 3 "), N("turns its controller into a state machine, and reuses the "
+           "counter as the timer inside the traffic-light controller.")],
+        [B("Part 3 again "), N("parameterises it as counter_n and instantiates it "
+           "twice to build a prescaler.")],
+        [B("Tutorial N "), N("runs it through the whole front end: spec, lint, "
+           "simulation, synthesis, gate-level simulation, comparison and formal "
+           "proof.")],
+    ], color=TEAL)
+
     w.callout("Part 1 self-check", [
         [N("1.  What two things does an RTL description state?")],
-        [N("2.  Explain what happens to a and b in a<=b; b<=a; and in a=b; b=a;")],
-        [N("3.  Name the four levels of abstraction, highest first.")],
-        [N("4.  Which level produced the smallest netlist, and why?")],
-        [N("5.  Why did dataflow and gate produce identical netlists?")],
-        [N("6.  Why does the lab include a deliberately broken full adder?")],
+        [N("2.  What are the only two kinds of digital logic?")],
+        [N("3.  Name three things the synchronous discipline buys you.")],
+        [N("4.  Explain what happens to a and b in a<=b; b<=a; and in a=b; b=a;")],
+        [N("5.  How many flip-flops did the blocking shift register build, and why?")],
+        [N("6.  Name the four levels of abstraction, highest first.")],
+        [N("7.  Which level produced the smallest netlist, and why?")],
+        [N("8.  Why did dataflow and gate produce identical netlists?")],
+        [N("9.  Why does the lab include a deliberately broken full adder?")],
+        [N("10. In counter4, why is there no else on the enable?")],
     ], color=GREEN, fill="EEF7F1", bar="2A9D5C")
 
     w.page_break()

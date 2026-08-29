@@ -195,6 +195,45 @@ def build(w):
               "you anything? If the answer needs a conversation, it is not reusable "
               "yet.")])
 
+    w.h2("2.8  Coding style: one function, three ways")
+
+    w.image("mux_styles", width=6.4)
+
+    w.para([N("A four-to-one multiplexer can be written as a conditional expression, "
+              "as a case statement, or as an if/else chain. The usual classroom "
+              "claim is that the optimiser flattens the difference, so you should "
+              "write whichever reads best. Half of that is right.")])
+
+    w.code([
+        "$ make mux",
+        "  patterns checked : 64        mismatches : 0",
+        "  mux4_assign vs mux4_case      EQUIVALENT  (proved, 92 SAT variables)",
+        "  mux4_assign vs mux4_if        EQUIVALENT  (proved, 76 SAT variables)",
+        "",
+        "  mux4_assign                     3 cells     0 flip-flops",
+        "  mux4_if                         6 cells     0 flip-flops",
+        "  mux4_case                      10 cells     0 flip-flops"])
+
+    w.callout("Equivalent is not the same as identical", [
+        [N("The SAT proof answers exactly one question: do these three descriptions "
+           "compute the same Boolean function? They do. It says nothing whatever "
+           "about area, timing or power — those are separate questions with separate "
+           "tools.")],
+        [N("The conditional expression hands sel[1] and sel[0] straight to the "
+           "multiplexer selects. The case and if/else versions ask the tool to build "
+           "equality comparators against 2'b00, 2'b01 and so on, and then to work "
+           "out for itself that those comparisons ARE the select bits. On Yosys 0.33 "
+           "it gets part of the way.")],
+    ], color=RED, fill="FDECEF", bar="D6224A")
+
+    w.para([N("So which do you write? Whichever reads best to the next person — "
+              "usually the case statement once there are more than three branches — "
+              "and then "), B("measure"), N(", on your own tool, if the block turns "
+              "out to be on a critical path. A different synthesiser may well close "
+              "the gap. Folklore about what optimisers do is the least reliable kind "
+              "of knowledge in this field, and it is cheap to replace with a "
+              "measurement.")])
+
     w.callout("Part 2 self-check", [
         [N("1.  Name the first four stages of the flow, and say what evidence each "
            "produces.")],
@@ -203,14 +242,18 @@ def build(w):
         [N("4.  a / b cost 371 cells and a / 4 cost 0. Explain.")],
         [N("5.  Why is an incomplete sensitivity list worse than a syntax error?")],
         [N("6.  Name three decisions synthesis will not make for you.")],
+        [N("7.  Does a formal equivalence proof say anything about area?")],
+        [N("8.  Three mux styles gave 3, 6 and 10 cells. Explain why.")],
     ], color=GREEN, fill="EEF7F1", bar="2A9D5C")
 
     w.page_break()
 
-    # ================================================================ Part 3
-    w.h1("Part 3 · Hardware Description Languages")
 
-    w.h2("3.1  An HDL is not a programming language")
+def build_hdl(w):
+    """Part 4 - HDLs. Called after the patterns part, which is Part 3."""
+    w.h1("Part 4 · Hardware Description Languages")
+
+    w.h2("4.1  An HDL is not a programming language")
 
     w.image("what_is_hdl", width=6.5)
 
@@ -222,7 +265,7 @@ def build(w):
               "construct can be perfectly legal Verilog and still have no hardware "
               "meaning at all — as the subset table in Part 2 measured.")])
 
-    w.h2("3.2  Everything happens at once")
+    w.h2("4.2  Everything happens at once")
 
     w.image("concurrency", width=6.4)
 
@@ -235,7 +278,7 @@ def build(w):
               "That is exactly why mixing "), M("="), N(" and "), M("<="),
             N(" in one block is confusing enough to be a lint rule.")])
 
-    w.h2("3.3  The anatomy of a module")
+    w.h2("4.3  The anatomy of a module")
 
     w.image("module_anatomy", width=6.5)
 
@@ -249,7 +292,7 @@ def build(w):
          M("reg"), N(" to "), M("logic"), N(" precisely to end this confusion.")],
     ], color=AMBER, fill="FFF7EC", bar="C77514")
 
-    w.h2("3.4  How a simulator runs an HDL")
+    w.h2("4.4  How a simulator runs an HDL")
 
     w.image("event_simulation", width=6.5)
 
@@ -269,7 +312,7 @@ def build(w):
            "cannot affect the result.")],
     ], color=RED, fill="FDECEF", bar="D6224A")
 
-    w.h2("3.5  Verilog and VHDL")
+    w.h2("4.5  Verilog and VHDL")
 
     w.image("verilog_vhdl", width=6.5)
 
@@ -279,7 +322,7 @@ def build(w):
               "afternoon; an engineer who has only memorised syntax can read "
               "neither.")])
 
-    w.h3("The same counter, in both, actually run")
+    w.h3("The same designs, in both languages, actually run")
     w.image("two_languages_result", width=6.4)
 
     w.code([
@@ -291,17 +334,80 @@ def build(w):
         "    cycle 14  count=1111  tc=1",
         "    cycle 15  count=0000  tc=0",
         "  === diff of the two transcripts ===",
-        "  IDENTICAL over all 18 cycles - including the wrap and the terminal count."])
+        "  IDENTICAL over all 18 cycles - including the wrap and the terminal count.",
+        "",
+        "  === the same '101' detector, both languages ===",
+        "  IDENTICAL over all 17 cycles, detections included."])
 
-    w.para([N("Not \"they look similar\". The two logs were compared line by line by "
+    w.para([N("Not \"they look similar\". The logs were compared line by line by "
               "diff, through two different simulators, and there was nothing to "
               "report.", {"b": True})])
 
-    w.h2("3.6  Which one should you learn?")
+    w.para([N("The state machine is the more interesting of the two, because it is "
+              "where the languages genuinely differ. In Verilog the states are "
+              "numbers you chose; in VHDL they are a "), B("type"), N(":")])
+    w.code([
+        "// Verilog",
+        "localparam [1:0] S_IDLE = 2'd0, S_1 = 2'd1, S_10 = 2'd2, S_101 = 2'd3;",
+        "",
+        "-- VHDL",
+        "type state_t is (S_IDLE, S_1, S_10, S_101);",
+        "signal state, next_state : state_t;"])
+    w.para([N("The VHDL version cannot be assigned a value that is not one of those "
+              "four — the analyser rejects it — and it also rejects a case statement "
+              "that is not exhaustive. The Verilog version will accept "),
+            M("state <= 2'd7"), N(" and nobody will complain until silicon. That is "
+              "the trade in one sentence: VHDL catches more mistakes at compile time "
+              "and costs more keystrokes; Verilog is faster to write and trusts you "
+              "more than it should.")])
+
+    w.h2("4.6  Reference cards, and what a testbench is made of")
+
+    w.para([N("The two pages that follow are the whole of the language you need for "
+              "this topic — not the whole of Verilog or VHDL, which are both far "
+              "larger, but the part that synthesises. Keep them beside you until "
+              "you no longer need them.")])
+
+    w.image("verilog_card", width=6.4)
+    w.image("vhdl_card", width=6.4)
+
+    w.h3("Verilog to VHDL, line for line")
+    w.image("lang_mapping", width=6.4)
+
+    w.h3("The anatomy of a testbench")
+
+    w.image("testbench_anatomy", width=6.4)
+
+    w.para([N("Topic 5 covers verification properly. Six parts are enough to finish "
+              "Topic 2, and the fourth is the one people leave out:")])
+    w.numbered([
+        [B("Clock. "), M("always #5 clk = ~clk;"), N(" — nothing else generates it.")],
+        [B("Reset. "), N("Asserted before anything else, and released away from the "
+           "sampling edge on purpose.")],
+        [B("Stimulus. "), N("Driven on the inactive edge, sampled before the active "
+           "one, so the design never sees a value changing at the instant it "
+           "samples.")],
+        [B("Golden model. "), N("The expected answer, computed from the STIMULUS "
+           "and never from the design under test.")],
+        [B("Checker. "), N("The line that compares them and counts. This is what "
+           "makes a testbench self-checking.")],
+        [B("Verdict. "), N("One line a human can read without opening a waveform.")],
+    ])
+
+    w.callout("A testbench without a golden model is not a test", [
+        [N("If the expected answer comes from the design, the test passes whatever "
+           "the design does. Every checker in this lab computes its expectation from "
+           "the stimulus — which is the only reason it was able to print "),
+         M("blocking version : 6 wrong cycles"), N(" at all.")],
+        [N("Eyeballing a waveform is not a checker either. It does not scale past "
+           "about ten cycles, and it never runs twice.")],
+    ], color=RED, fill="FDECEF", bar="D6224A")
+
+    w.h2("4.7  Which one should you learn?")
 
     w.image("hdl_choose", width=6.5)
 
-    w.callout("Part 3 self-check", [
+    w.callout("Part 4 self-check", [
         [N("1.  Give the biggest single difference between an HDL and a programming "
            "language.")],
         [N("2.  Does the order of assign statements matter? Why not?")],

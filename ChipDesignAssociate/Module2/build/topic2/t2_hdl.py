@@ -178,10 +178,11 @@ def verilog_vhdl():
 
 
 def two_languages_result():
-    W, Hin = 11.5, 8.0
+    W, Hin = 11.5, 8.4
     f, ax = fig(W, Hin)
     H = 100 * Hin / W                        # 69.6
-    title(ax, 50, H - 3, "The same counter, in both, actually run", 13)
+    title(ax, 50, H - 3, "The same designs, in both languages, actually run",
+          13)
 
     y = H - 11.0
     box(ax, 4, y - 20.0, 44, 20.0, fc="#F4F8FB", ec=TEAL, lw=1.7)
@@ -203,17 +204,23 @@ def two_languages_result():
         ax.text(55, y - 8.0 - i * 2.7, ln, fontsize=7.8, color=NAVY, ha="left",
                 family="monospace")
 
-    box(ax, 4, 3.0, 92, 24.0, fc=LIGHT, ec=NAVY, lw=1.7)
-    ax.text(50, 23.6, "Two languages, two simulators, transcripts diffed",
+    rows = [["counter", "rtl/counter.v", "vhdl/counter.vhd", "18", "IDENTICAL"],
+            ["'101' detector", "fsm/seq101_moore.v", "vhdl/seq101_moore.vhd", "17",
+             "IDENTICAL"]]
+    table(ax, 4, 36.0, ["design", "Verilog", "VHDL", "cycles", "diff"],
+          rows, [18, 26, 28, 10, 10], 5.0, size=8.0, bold_col=[0],
+          colcolors={4: GREEN})
+
+    box(ax, 4, 3.0, 92, 16.0, fc=LIGHT, ec=NAVY, lw=1.7)
+    ax.text(50, 15.6, "Two languages, two simulators, transcripts diffed",
             fontsize=9.6, color=NAVY, ha="center", fontweight="bold")
-    ax.text(50, 18.4, "cycle 14  count=1111  tc=1        cycle 15  count=0000  tc=0",
-            fontsize=8.8, color=BODY, ha="center", family="monospace")
-    ax.text(50, 13.0, "IDENTICAL over all 18 cycles - including the wrap and the "
-                      "terminal count.",
-            fontsize=9.2, color=GREEN, ha="center", fontweight="bold")
-    ax.text(50, 7.6, "Not \"they look similar\". The two logs were compared line by "
-                     "line by diff, and there was\nnothing to report.",
+    ax.text(50, 11.0, "Not \"they look similar\". The logs were compared line by "
+                      "line by diff, and there was nothing to report.",
             fontsize=8.6, color=BODY, ha="center")
+    ax.text(50, 6.0, "The state machine is the interesting one: VHDL gives the states "
+                     "a real enumerated TYPE, so an illegal\nstate will not compile. "
+                     "Verilog gives them numbers.",
+            fontsize=8.6, color=GREEN, ha="center", fontweight="bold")
     save(f, "two_languages_result")
 
 

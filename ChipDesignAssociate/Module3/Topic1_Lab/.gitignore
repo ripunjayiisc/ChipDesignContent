@@ -1,0 +1,9 @@
+build/
+*.json
+*.log
+*.vvp
+*.vcd
+*.jou
+vivado/rpt/
+.Xil/
+__pycache__/

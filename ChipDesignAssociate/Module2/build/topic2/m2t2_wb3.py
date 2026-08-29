@@ -11,7 +11,7 @@ def build(w):
 
     w.h2("5.1  Which tool answers which question")
 
-    w.image("tool_landscape", width=6.5)
+    w.image("tool_landscape", width=6.9)
 
     w.callout("Yosys is the interesting one", [
         [N("It is the only free tool in that list that will both synthesise your RTL "
@@ -22,7 +22,7 @@ def build(w):
 
     w.h2("5.2  Installing")
 
-    w.image("install_required", width=6.4)
+    w.image("install_required", width=6.9)
 
     w.code([
         "sudo apt update",
@@ -39,7 +39,7 @@ def build(w):
             N(" still works.")])
 
     w.h3("The vendor tools the syllabus names")
-    w.image("install_vendor", width=6.4)
+    w.image("install_vendor", width=6.9)
 
     w.callout("An honest note about the vendor tools", [
         [N("Vivado and ModelSim are not installed in the environment these materials "
@@ -53,7 +53,7 @@ def build(w):
 
     w.h2("5.3  What the lab does with your RTL")
 
-    w.image("lab_flow", width=6.4)
+    w.image("lab_flow", width=6.9)
 
     w.para([N("Four different questions about one piece of code: does it follow the "
               "rules, does it do what the spec says, what will actually be built from "
@@ -75,7 +75,7 @@ def build(w):
            "stop and find out why before moving on.")],
     ], color=NAVY, bar="0E2A47")
 
-    w.image("lab_map", width=6.5)
+    w.image("lab_map", width=6.9)
 
     # ------------------------------------------------------------------ A
     w.h2("Tutorial A · What RTL means  (1 hour)")
@@ -560,7 +560,7 @@ def build(w):
 
     w.h3("Step 3 — the same design in the vendor tools")
 
-    w.image("vivado_flow", width=6.5)
+    w.image("vivado_flow", width=6.9)
 
     w.para([N("Run the same counter through Vivado, and the same testbench through "
               "ModelSim. Compare three things with what you already have: the "

@@ -16,7 +16,7 @@ def build(w):
     # ================================================ datapath + controller
     w.h2("3.1  Datapath and controller")
 
-    w.image("datapath_controller", width=6.4)
+    w.image("datapath_controller", width=6.9)
 
     w.para([N("A UART, a cache controller, a DMA engine, a GPU shader core — "
               "different sizes, the same two halves.")])
@@ -80,7 +80,7 @@ def build(w):
              ["accum_datapath", "145", "24",
               "a 16-bit accumulator and an 8-bit down-counter"],
              ["accum_top", "156", "26", "both, plus the wires between them"]],
-            widths=[1.5, 0.8, 1.0, 3.5], size=9.0, bold_cols=(0,),
+            widths=[1.5, 0.8, 1.0, 3.5], size=10.0, bold_cols=(0,),
             align_center=False)
 
     w.callout("Six per cent of the cells, one hundred per cent of the behaviour", [
@@ -105,7 +105,7 @@ def build(w):
               "never crosses into the controller — it does not need it"],
              ["start, done", "handshake",
               "the block's interface, not an internal signal"]],
-            widths=[1.5, 1.4, 3.9], size=9.0, bold_cols=(0,), align_center=False)
+            widths=[1.5, 1.4, 3.9], size=10.0, bold_cols=(0,), align_center=False)
 
     w.para([N("The row worth arguing about is "), M("cnt_done"), N(". It would be "
               "possible for the controller to hold the counter itself and test it "
@@ -117,7 +117,7 @@ def build(w):
     # ============================================================== the FSM
     w.h2("3.2  The finite state machine")
 
-    w.image("fsm_pattern", width=6.4)
+    w.image("fsm_pattern", width=6.9)
 
     w.para([N("A state machine is the standard way to write anything that has to "
               "happen in a sequence. Almost every RTL group writes them in the same "
@@ -193,7 +193,7 @@ def build(w):
               "blocks 2 and 3 have no timing to re-read"],
              ["adding a state", "one place, easy to miss a branch",
               "two places, both of them a case statement"]],
-            widths=[1.6, 2.5, 2.7], size=9.0, bold_cols=(0,), align_center=False)
+            widths=[1.6, 2.5, 2.7], size=10.0, bold_cols=(0,), align_center=False)
 
     w.para([N("One block is not wrong. Three blocks are easier to be right in, and "
               "over a project that is the same thing.")])
@@ -201,7 +201,7 @@ def build(w):
     # ======================================================== Moore / Mealy
     w.h2("3.3  Moore and Mealy")
 
-    w.image("moore_mealy", width=6.4)
+    w.image("moore_mealy", width=6.9)
 
     w.para([N("There is exactly one structural difference between the two: whether "
               "the output logic is allowed to see the input. Everything else follows "
@@ -213,8 +213,8 @@ def build(w):
               "clock, counting overlaps — so the stream 1 0 1 0 1 contains two "
               "matches, not one.")])
 
-    w.image("seq101_moore_states", width=6.4)
-    w.image("seq101_mealy_states", width=6.4)
+    w.image("seq101_moore_states", width=6.9)
+    w.image("seq101_mealy_states", width=6.9)
 
     w.code([
         "// MOORE - the output is decoded from the state alone",
@@ -225,7 +225,7 @@ def build(w):
 
     w.h3("The difference, measured")
 
-    w.image("moore_mealy_timing", width=6.4)
+    w.image("moore_mealy_timing", width=6.9)
 
     w.code([
         "$ make fsm",
@@ -250,7 +250,7 @@ def build(w):
               "yes — inherits the input's glitches"],
              ["states needed", "usually one more", "usually one fewer"],
              ["measured here", "13 cells, 2 flip-flops", "14 cells, 2 flip-flops"]],
-            widths=[1.6, 2.5, 2.7], size=9.0, bold_cols=(0,), align_center=False)
+            widths=[1.6, 2.5, 2.7], size=10.0, bold_cols=(0,), align_center=False)
 
     w.callout("Choosing between them", [
         [B("Moore "), N("when the output leaves the block, drives other logic, or "
@@ -275,7 +275,7 @@ def build(w):
     # ============================================================ encoding
     w.h2("3.4  State encoding")
 
-    w.image("state_encoding", width=6.4)
+    w.image("state_encoding", width=6.9)
 
     w.para([N("The state names are just numbers you chose. Choosing them differently "
               "gives the same behaviour and different hardware.")])
@@ -294,7 +294,7 @@ def build(w):
               "FPGA, speed-critical, few states"],
              ["gray", "2", "—", "one bit changes per transition",
               "the state crosses a clock domain"]],
-            widths=[1.0, 0.7, 0.7, 1.9, 2.5], size=8.8, bold_cols=(0,),
+            widths=[1.0, 0.7, 0.7, 1.9, 2.5], size=9.6, bold_cols=(0,),
             align_center=False)
 
     w.callout("Read the measurement before repeating the folklore", [
@@ -311,7 +311,7 @@ def build(w):
     # =============================================== a controller + a timer
     w.h2("3.5  A controller with a timer, and how to check it")
 
-    w.image("traffic_states", width=6.4)
+    w.image("traffic_states", width=6.9)
 
     w.para([N("A traffic-light controller for a two-road junction, with a car sensor "
               "on the minor road. The main road stays green until a car appears, "
@@ -364,7 +364,7 @@ def build(w):
     # ============================================================== reuse
     w.h2("3.6  From a module to an IP")
 
-    w.image("hierarchy_generate", width=6.4)
+    w.image("hierarchy_generate", width=6.9)
 
     w.para([N("Module 2's terminal outcomes ask you to design and develop IPs, and "
               "to characterise "), B("reusable"), N(" ones. Reusable means one source "
@@ -379,7 +379,7 @@ def build(w):
               "flattening, if the tool flattens at all"],
              ["generate", "a compile-time loop that builds N copies of a structure",
               "elaboration"]],
-            widths=[1.2, 3.8, 1.8], size=9.0, bold_cols=(0,), align_center=False)
+            widths=[1.2, 3.8, 1.8], size=10.0, bold_cols=(0,), align_center=False)
 
     w.code([
         "module delayline #(parameter W = 8, parameter N = 4)",

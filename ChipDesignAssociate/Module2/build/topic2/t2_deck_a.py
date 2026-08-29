@@ -30,33 +30,39 @@ def build(d):
 
     # ==================================================== terminal outcomes
     s = d.slide("MODULE 2 · NOS NIE/ELE/N0102", "Terminal Outcomes")
-    y = d.image(s, TOP - 45720, "terminal_outcomes", 4389120)
+    y = d.image(s, TOP - 45720, "terminal_outcomes", 4250000)
     d.card(s, y + G, "Outcome 2 names this subtopic in the NOS itself",
            [[R("\"Level of abstraction in Verilog programming\" is the phrase. This "
                "session takes one circuit down all four levels, simulates them "
                "together, and proves they are the same — which is the deliverable "
-               "the outcome asks for.", s=10.5)]],
+               "the outcome asks for.", s=12.0)]],
            accent=NAVY, h=868680)
 
     s = d.slide("MODULE 2 · TOPIC 2", "Key Learning Outcomes", accent=GREEN)
-    y = d.image(s, TOP - 45720, "learning_outcomes", 4389120)
+    y = d.image(s, TOP - 45720, "learning_outcomes", 4950000)
     d.lead(s, y + G, [[R("Every outcome is assessed by a command you run, not by "
-                         "something you recite.", b=True, c=GREEN, s=11)]],
+                         "something you recite.", b=True, c=GREEN, s=12.0)]],
            h=365760)
 
+    s = d.slide("MODULE 2 · TOPIC 2", "Which Command Assesses Which Outcome",
+                accent=GREEN)
+    y = d.image(s, TOP - 45720, "outcomes_commands", 4950000)
+    d.lead(s, y + G, [[R("Run the right-hand column and you have evidence for the "
+                         "left-hand one.", s=12.0)]], h=228600)
+
     s = d.slide("TOPIC 2 · COVERAGE", "Every Syllabus Phrase, and Where It Is Covered")
-    y = d.image(s, TOP - 45720, "syllabus_map", 4389120)
+    y = d.image(s, TOP - 45720, "syllabus_map", 4250000)
     d.card(s, y + G, "On the four notional hours",
            [[R("Four hours is enough to define the terms. It is not enough to make "
                "anyone believe them — and nothing in this subtopic is believed until "
                "it has been seen to happen. Lecture from the summary slides to fit "
-               "four hours; run the lab alongside to teach it.", s=10.5)]],
+               "four hours; run the lab alongside to teach it.", s=12.0)]],
            accent=AMBER, fill=CARD_A, h=868680)
 
     s = d.slide("TOPIC 2 · STRUCTURE", "How This Session Runs")
-    y = d.image(s, TOP - 45720, "topic_structure", 4480560)
+    y = d.image(s, TOP - 45720, "topic_structure", 4950000)
     d.lead(s, y + G, [[R("RTL is not a language and it is not a tool. It is a way of "
-                         "thinking about hardware.", b=True, c=NAVY, s=11)]],
+                         "thinking about hardware.", b=True, c=NAVY, s=12.0)]],
            h=274320)
 
     # ===================================================== section THEORY 1
@@ -72,7 +78,7 @@ def build(d):
     # --------------------------------------------------------- definition
     s = d.slide("1.1 · THE DEFINITION", "Register Transfer Level: the Name Is the "
                                         "Definition")
-    y = d.image(s, TOP - 45720, "rtl_definition", 4297680)
+    y = d.image(s, TOP - 45720, "rtl_definition", 4250000)
     d.card(s, y + G, "Two statements, and nothing else",
            [[R("1.  Which registers exist.    2.  What transfers into each one, on "
                "each clock edge.")],
@@ -82,28 +88,34 @@ def build(d):
            accent=NAVY, h=868680)
 
     s = d.slide("1.1 · THE DEFINITION", "Watch One Value Transfer")
-    y = d.image(s, TOP - 45720, "rtl_transfer_trace", 4389120)
+    y = d.image(s, TOP - 45720, "rtl_transfer_trace", 4950000)
     d.lead(s, y + G, [[R("A single 5 applied on cycle 0. It reaches x, then y as 6, "
                          "then z as 12, then acc — one register per clock edge, and "
-                         "nothing moves in between.", s=10.5)]], h=365760)
+                         "nothing moves in between.", s=12.0)]], h=365760)
 
     # --------------------------------------------- the two kinds of logic
     s = d.slide("1.2 · THE TWO KINDS", "Combinational and Sequential")
-    y = d.image(s, TOP - 45720, "comb_vs_seq", 4754880)
+    y = d.image(s, TOP - 45720, "comb_vs_seq", 4950000)
     d.lead(s, y + G, [[R("There is no third kind. Every block in this course is an "
-                         "arrangement of these two.", b=True, c=NAVY, s=10.5)]],
+                         "arrangement of these two.", b=True, c=NAVY, s=12.0)]],
            h=274320)
+
+    s = d.slide("1.2 · THE TWO KINDS", "Side By Side")
+    y = d.image(s, TOP - 45720, "comb_vs_seq_table", 4950000)
+    d.lead(s, y + G, [[R("Each row is a rule you will use every day. Learn which "
+                         "column you are in before you write a line.", s=12.0)]],
+           h=228600)
 
     s = d.slide("1.2 · THE TWO KINDS", "The Same Distinction, In Code")
     y = d.cols(s, TOP, [
         ("COMBINATIONAL",
-         [[R("always @(*)  or  assign", b=True, c=TEAL, s=10.5)],
+         [[R("always @(*)  or  assign", b=True, c=TEAL, s=12.0)],
           [R("Blocking assignment. Every output written on every path, or the "
              "tool builds a latch you did not ask for.")],
           [R("No clock appears anywhere in the block.")],
           [R("Checked by: simulation, lint.", b=True, c=NAVY)]], TEAL, CARD),
         ("SEQUENTIAL",
-         [[R("always @(posedge clk)", b=True, c=VIOLET, s=10.5)],
+         [[R("always @(posedge clk)", b=True, c=VIOLET, s=12.0)],
           [R("Non-blocking assignment. Reset appears here and only here.")],
           [R("One value remembered per flip-flop, updated on the edge and at no "
              "other time.")],
@@ -120,9 +132,9 @@ def build(d):
 
     # -------------------------------------------------- synchronous design
     s = d.slide("1.3 · THE DISCIPLINE", "One Clock, One Edge, Everything")
-    y = d.image(s, TOP - 45720, "sync_design", 5029200)
+    y = d.image(s, TOP - 45720, "sync_design", 4950000)
     d.lead(s, y + G, [[R("Almost every rule in this topic is a consequence of this "
-                         "one decision.", b=True, c=NAVY, s=10.5)]], h=228600)
+                         "one decision.", b=True, c=NAVY, s=12.0)]], h=228600)
 
     s = d.slide("1.3 · THE DISCIPLINE", "What the Discipline Buys You")
     y = d.tiers(s, TOP, [
@@ -145,7 +157,7 @@ def build(d):
         h=822960)
 
     d.lead(s, y + G, [[R("You are allowed to break these rules. You are not allowed "
-                         "to break them by accident.", b=True, c=AMBER, s=11)]],
+                         "to break them by accident.", b=True, c=AMBER, s=12.0)]],
            h=274320)
 
     # ------------------------------------------------------------- why RTL
@@ -174,14 +186,14 @@ def build(d):
                accent=TEAL, h=1005840)
 
     d.lead(s, y + G, [[R("Above RTL you cannot say when things happen. Below it you "
-                         "cannot say anything else.", b=True, c=SLATE, s=10.5)]],
+                         "cannot say anything else.", b=True, c=SLATE, s=12.0)]],
            h=274320)
 
     # ------------------------------------------------------- blocking
     s = d.slide("1.5 · <= AND =", "The Two Assignment Operators, and Why It Matters")
-    y = d.image(s, TOP - 45720, "nonblocking", 4389120)
+    y = d.image(s, TOP - 45720, "nonblocking", 4950000)
     d.lead(s, y + G, [[R("Neither one is an error. Both are caught by the linter you "
-                         "build in this topic.", b=True, c=RED, s=10.5)]], h=274320)
+                         "build in this topic.", b=True, c=RED, s=12.0)]], h=274320)
 
     s = d.slide("1.5 · <= AND =", "The Swap, Worked Through")
     y = d.code(s, TOP, [
@@ -201,7 +213,7 @@ def build(d):
         "        b = a;         //  a is already b, so this does nothing",
         "",
         "        BOTH end up holding b.  This is what software does."],
-        size=9.5)
+        size=11.2)
 
     d.card(s, y + G, "Why the rule is absolute rather than stylistic",
            [[R("Two clocked blocks using blocking assignments can see each other's "
@@ -214,16 +226,16 @@ def build(d):
 
     s = d.slide("1.5 · <= AND =", "And What Each One Actually Builds",
                 accent=RED)
-    y = d.image(s, TOP - 45720, "blocking_measured", 5029200)
+    y = d.image(s, TOP - 45720, "blocking_measured", 4950000)
     d.lead(s, y + G, [[R("Three flip-flops against one. Nothing illegal was "
-                         "written, so nothing warned.", b=True, c=RED, s=10.5)]],
+                         "written, so nothing warned.", b=True, c=RED, s=12.0)]],
            h=228600)
 
     # ---------------------------------------------------------- the ladder
     s = d.slide("1.6 · ABSTRACTION", "Four Levels, One Circuit")
-    y = d.image(s, TOP - 45720, "ladder", 4937760)
-    d.lead(s, y + G, [[R("All four were simulated together on all 8 input patterns. "
-                         "Zero mismatches.", b=True, c=GREEN, s=11)]], h=228600)
+    y = d.image(s, TOP - 45720, "ladder", 4950000)
+    d.lead(s, y + G, [[R("The level of abstraction changes WHAT WAS WRITTEN, not "
+                         "what it does.", b=True, c=NAVY, s=12.0)]], h=228600)
 
     s = d.slide("1.6 · ABSTRACTION", "The Same Adder, Written Four Ways")
     d.code(s, TOP, [
@@ -241,19 +253,19 @@ def build(d):
         "",
         "// SWITCH - you place individual transistors",
         "pmos p1 (y, vdd, a);    nmos n1 (y, gnd, a);      // one CMOS inverter"],
-        size=9.5)
+        size=11.2)
 
     s = d.slide("1.6 · ABSTRACTION", "And What a Synthesiser Makes of Each")
-    y = d.image(s, TOP - 45720, "ladder_synthesis", 4937760)
+    y = d.image(s, TOP - 45720, "ladder_synthesis", 4950000)
     d.lead(s, y + G, [[R("The behavioural description produced the SMALLEST circuit — "
                          "and dataflow and gate produced the identical netlist.",
-                         b=True, c=AMBER, s=10.5)]], h=228600)
+                         b=True, c=AMBER, s=12.0)]], h=228600)
 
     s = d.slide("1.6 · ABSTRACTION", "The Rule This Gives You", accent=GREEN)
     y = d.card(s, TOP, "Write at the highest level that expresses your intent",
                [[R("Every level you descend takes a decision away from the tool and "
                    "gives it to you — whether or not you wanted it.", b=True,
-                   c=NAVY, s=12)]],
+                   c=NAVY, s=13.0)]],
                accent=GREEN, fill=CARD_G, h=685800)
 
     y = d.cols(s, y + G, [
@@ -270,22 +282,22 @@ def build(d):
         h=2011680)
 
     d.lead(s, y + G, [[R("Give the tool the first list. Keep the second one for "
-                         "yourself.", b=True, c=NAVY, s=11)]], h=274320)
+                         "yourself.", b=True, c=NAVY, s=12.0)]], h=274320)
 
     # ------------------------------------------------------------- proof
     s = d.slide("1.7 · PROOF", "Simulation Shows. Proof Settles.")
-    y = d.image(s, TOP - 45720, "proof_vs_test", 4846320)
+    y = d.image(s, TOP - 45720, "proof_vs_test", 4950000)
     d.lead(s, y + G, [[R("A checker that cannot fail is not evidence of anything — "
                          "which is why the lab includes a deliberately broken adder.",
-                         b=True, c=RED, s=10.5)]], h=274320)
+                         b=True, c=RED, s=12.0)]], h=274320)
 
     # ------------------------------------------------- the running example
     s = d.slide("1.8 · THE RUNNING EXAMPLE", "One Design, Carried All the Way "
                 "Through")
-    y = d.image(s, TOP - 45720, "running_example", 4754880)
+    y = d.image(s, TOP - 45720, "running_example", 4950000)
     d.lead(s, y + G, [[R("Four bits, an asynchronous reset, an enable and a "
                          "terminal count. Small enough to read in one glance, big "
-                         "enough to be a real design.", s=10.5)]], h=274320)
+                         "enough to be a real design.", s=12.0)]], h=274320)
 
     s = d.slide("1.8 · THE RUNNING EXAMPLE", "Read It Line By Line")
     y = d.code(s, TOP, [
@@ -302,7 +314,7 @@ def build(d):
         "    end                                     // no else: HOLD",
         "",
         "    assign tc = en & (count == 4'd15);",
-        "endmodule"], size=10)
+        "endmodule"], size=11.5)
 
     d.card(s, y + G, "Four decisions are visible in fourteen lines",
            [[R("The reset is ASYNCHRONOUS, so it is in the sensitivity list; it is "
@@ -313,10 +325,10 @@ def build(d):
            accent=NAVY, h=1097280)
 
     s = d.slide("1.8 · THE RUNNING EXAMPLE", "The Numbers, Worked Out")
-    y = d.image(s, TOP - 45720, "numerical_example", 5029200)
+    y = d.image(s, TOP - 45720, "numerical_example", 4950000)
     d.lead(s, y + G, [[R("Derive the formula, then measure it. A testbench that only "
                          "ever tries one value of N has told you almost nothing.",
-                         b=True, c=NAVY, s=10.5)]], h=274320)
+                         b=True, c=NAVY, s=12.0)]], h=274320)
 
     s = d.slide("THEORY 1 · CHECKPOINT", "Nine Questions", accent=GREEN)
     y = d.table(s, TOP,
@@ -339,6 +351,6 @@ def build(d):
                   "analysable timing, composable blocks, testable silicon"],
                  ["9", "In counter4, why is there no else on the enable?",
                   "in a clocked block, no assignment means hold"]],
-                [548640, 5029200, 5669280], rh=274320, bold_cols=(0,), size=9.2)
+                [548640, 5029200, 5669280], rh=310896, bold_cols=(0,), size=11.0)
     d.lead(s, y + G, [[R("Theory 2 asks what you are allowed to write, and why the "
-                         "rules exist.", b=True, c=GREEN, s=11)]], h=274320)
+                         "rules exist.", b=True, c=GREEN, s=12.0)]], h=274320)

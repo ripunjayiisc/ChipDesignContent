@@ -11,7 +11,7 @@ def build(w):
 
     w.h2("2.1  The flow")
 
-    w.image("design_flow", width=6.5)
+    w.image("design_flow", width=6.9)
 
     w.para([N("Every arrow points both ways in practice. A timing failure sends you "
               "back to the RTL; a synthesis surprise sends you back to the "
@@ -24,7 +24,7 @@ def build(w):
               "produces — because a stage that produces no evidence is a stage nobody "
               "can tell you skipped.")])
 
-    w.image("flow_executed", width=6.4)
+    w.image("flow_executed", width=6.9)
 
     w.code([
         "$ make flow",
@@ -52,7 +52,7 @@ def build(w):
               "watch a synthesiser refuse to build something. The lab runs eleven "
               "constructs through Yosys and reports what came out.")])
 
-    w.image("synth_subset", width=6.5)
+    w.image("synth_subset", width=6.9)
 
     w.h3("Three rows worth discussing")
     w.table(["Row", "What happened", "Why it matters"],
@@ -66,7 +66,7 @@ def build(w):
               "Yosys targets FPGAs, where the bitstream really does initialise the "
               "flops. An ASIC flow would not — this is how code that works on an FPGA "
               "fails on an ASIC."]],
-            widths=[1.6, 1.8, 3.4], size=9.0, bold_cols=(0,), align_center=False)
+            widths=[1.6, 1.8, 3.4], size=10.0, bold_cols=(0,), align_center=False)
 
     w.callout("The habit this table is for", [
         [N("Before you use a construct you are unsure about, synthesise a ten-line "
@@ -77,7 +77,7 @@ def build(w):
 
     w.h2("2.3  The inferred latch")
 
-    w.image("latch_inference", width=6.4)
+    w.image("latch_inference", width=6.9)
 
     w.para([N("When "), M("en"), N(" is 0 the code never says what "), M("y"),
             N(" should be — so the tool must build something that remembers the old "
@@ -91,7 +91,7 @@ def build(w):
               "time-borrowing; much harder to analyse"],
              ["in a scan chain", "standard", "usually needs special handling"],
              ["you asked for it", "yes, by writing posedge", "no — you forgot an else"]],
-            widths=[1.5, 2.4, 2.9], size=9.0, bold_cols=(0,), align_center=False)
+            widths=[1.5, 2.4, 2.9], size=10.0, bold_cols=(0,), align_center=False)
 
     w.callout("Why it is worse than an error", [
         [N("It is not an error at all. The tool builds it, mentions it in a log nobody "
@@ -106,7 +106,7 @@ def build(w):
 
     w.h2("2.4  When simulation and silicon disagree")
 
-    w.image("sim_synth_mismatch", width=6.5)
+    w.image("sim_synth_mismatch", width=6.9)
 
     w.para([N("This is the worst bug in the topic, because it is the only one that "
               "cannot be found by testing — the thing you are testing is not the "
@@ -130,7 +130,7 @@ def build(w):
               "ignores it; the flop powers up unknown"],
              ["blocking in a clocked block", "result depends on evaluation order",
               "builds one specific circuit"]],
-            widths=[2.1, 2.4, 2.3], size=9.0, bold_cols=(0,), align_center=False)
+            widths=[2.1, 2.4, 2.3], size=10.0, bold_cols=(0,), align_center=False)
 
     w.callout("All four have the same cure", [
         [N("Use "), M("always @*"), N(" and never a hand-written sensitivity list. "
@@ -143,7 +143,7 @@ def build(w):
 
     w.h2("2.5  Seven coding rules, and a tool that checks them")
 
-    w.image("lint_rules", width=6.5)
+    w.image("lint_rules", width=6.9)
 
     w.para([N("Methodology degenerates into a list of good intentions unless something "
               "checks it. Every rule above is one a reviewer would otherwise have to "
@@ -166,7 +166,7 @@ def build(w):
         "",
         "  L005 and L006 are not opinions - they predict what gets built."])
 
-    w.image("coding_rules", width=6.4)
+    w.image("coding_rules", width=6.9)
 
     w.para([N("None of these are style preferences. Every one exists because breaking "
               "it produces a design that simulates differently from the way it is "
@@ -175,7 +175,7 @@ def build(w):
 
     w.h2("2.6  Micro-architecture: the decisions RTL cannot make for you")
 
-    w.image("partitioning", width=6.5)
+    w.image("partitioning", width=6.9)
 
     w.callout("This is where the engineering is", [
         [N("A synthesiser is better than you are at choosing gates. It is not better "
@@ -186,7 +186,7 @@ def build(w):
 
     w.h2("2.7  Writing RTL someone else can use")
 
-    w.image("reuse", width=6.4)
+    w.image("reuse", width=6.9)
 
     w.para([N("Module 2's fourth terminal outcome asks for reusable IP by name. "
               "Reuse is not something you add to a design afterwards; it is a set of "
@@ -197,7 +197,7 @@ def build(w):
 
     w.h2("2.8  Coding style: one function, three ways")
 
-    w.image("mux_styles", width=6.4)
+    w.image("mux_styles", width=6.9)
 
     w.para([N("A four-to-one multiplexer can be written as a conditional expression, "
               "as a case statement, or as an if/else chain. The usual classroom "
@@ -255,7 +255,7 @@ def build_hdl(w):
 
     w.h2("4.1  An HDL is not a programming language")
 
-    w.image("what_is_hdl", width=6.5)
+    w.image("what_is_hdl", width=6.9)
 
     w.para([N("It looks like one, and that resemblance is the single biggest source of "
               "beginner bugs. You are not writing instructions for a machine to "
@@ -267,7 +267,7 @@ def build_hdl(w):
 
     w.h2("4.2  Everything happens at once")
 
-    w.image("concurrency", width=6.4)
+    w.image("concurrency", width=6.9)
 
     w.para([N("Write those three "), M("assign"), N(" lines in any order you like and "
               "the circuit is identical, because you did not write a sequence — you "
@@ -280,7 +280,7 @@ def build_hdl(w):
 
     w.h2("4.3  The anatomy of a module")
 
-    w.image("module_anatomy", width=6.5)
+    w.image("module_anatomy", width=6.9)
 
     w.callout("The word that confuses everyone: reg", [
         [M("reg"), N(" does NOT mean register. It means \"this signal is assigned "
@@ -294,7 +294,7 @@ def build_hdl(w):
 
     w.h2("4.4  How a simulator runs an HDL")
 
-    w.image("event_simulation", width=6.5)
+    w.image("event_simulation", width=6.9)
 
     w.para([N("Nothing runs continuously. The simulator jumps from event to event: a "
               "signal changes, everything sensitive to it wakes, they are all "
@@ -314,7 +314,7 @@ def build_hdl(w):
 
     w.h2("4.5  Verilog and VHDL")
 
-    w.image("verilog_vhdl", width=6.5)
+    w.image("verilog_vhdl", width=6.9)
 
     w.para([N("None of those differences are about hardware. Both describe registers, "
               "combinational logic and hierarchy; both synthesise to the same gates. "
@@ -323,7 +323,7 @@ def build_hdl(w):
               "neither.")])
 
     w.h3("The same designs, in both languages, actually run")
-    w.image("two_languages_result", width=6.4)
+    w.image("two_languages_result", width=6.9)
 
     w.code([
         "$ make langs",
@@ -368,15 +368,15 @@ def build_hdl(w):
               "larger, but the part that synthesises. Keep them beside you until "
               "you no longer need them.")])
 
-    w.image("verilog_card", width=6.4)
-    w.image("vhdl_card", width=6.4)
+    w.image("verilog_card", width=6.9)
+    w.image("vhdl_card", width=6.9)
 
     w.h3("Verilog to VHDL, line for line")
-    w.image("lang_mapping", width=6.4)
+    w.image("lang_mapping", width=6.9)
 
     w.h3("The anatomy of a testbench")
 
-    w.image("testbench_anatomy", width=6.4)
+    w.image("testbench_anatomy", width=6.9)
 
     w.para([N("Topic 5 covers verification properly. Six parts are enough to finish "
               "Topic 2, and the fourth is the one people leave out:")])
@@ -405,7 +405,7 @@ def build_hdl(w):
 
     w.h2("4.7  Which one should you learn?")
 
-    w.image("hdl_choose", width=6.5)
+    w.image("hdl_choose", width=6.9)
 
     w.callout("Part 4 self-check", [
         [N("1.  Give the biggest single difference between an HDL and a programming "

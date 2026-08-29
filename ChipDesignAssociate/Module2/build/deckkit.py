@@ -206,7 +206,7 @@ class Deck:
                   align=PP_ALIGN.RIGHT, anchor=MSO_ANCHOR.MIDDLE)
 
     # ---------------------------------------------------------- content blocks
-    def lead(self, sld, y, paras, h=None, size=12.5, w=MW, x=ML):
+    def lead(self, sld, y, paras, h=None, size=13.5, w=MW, x=ML):
         n = sum(1 for _ in paras)
         if h is None:
             h = 274320 * n
@@ -214,7 +214,7 @@ class Deck:
         return y + h
 
     def card(self, sld, y, heading, paras, accent=TEAL, h=None, x=ML, w=MW,
-             fill=CARD, size=11, head_size=11.5, pad=164592):
+             fill=CARD, size=12, head_size=12.5, pad=164592):
         if h is None:
             h = 274320 * (len(paras) + 1) + 274320
         self.round(sld, x, y, w, h, fill=fill, line=accent)
@@ -225,7 +225,7 @@ class Deck:
                   paras, space_after=4)
         return y + h
 
-    def bullets(self, sld, y, items, accent=TEAL, size=11.5, x=ML, w=MW, step=274320,
+    def bullets(self, sld, y, items, accent=TEAL, size=12.5, x=ML, w=MW, step=274320,
                 bullet="▪"):
         for it in items:
             if isinstance(it, str):
@@ -260,10 +260,10 @@ class Deck:
             self.round(sld, ML, y, MW, h, fill=CARD, line=GRID, lw=9525)
             self.round(sld, ML, y, 1737360, h, fill=col, line=col)
             self.text(sld, ML, y, 1737360, h,
-                      [[{"t": lab, "b": True, "c": WHITE, "s": 12.5, "f": HEAD_FONT}]],
+                      [[{"t": lab, "b": True, "c": WHITE, "s": 13.0, "f": HEAD_FONT}]],
                       align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
             self.text(sld, ML + 1920240, y + 45720, MW - 2103120, h - 91440,
-                      [[{"t": txt, "c": BODY, "s": 10.5}]], anchor=MSO_ANCHOR.MIDDLE)
+                      [[{"t": txt, "c": BODY, "s": 11.5}]], anchor=MSO_ANCHOR.MIDDLE)
             y += h + gap
         return y
 
@@ -279,7 +279,7 @@ class Deck:
                       pad=137160)
         return y + h
 
-    def code(self, sld, y, lines, h=None, x=ML, w=MW, size=10.5, title=None,
+    def code(self, sld, y, lines, h=None, x=ML, w=MW, size=11.5, title=None,
              accent=TEAL):
         lh = int(size * 12700 * 1.48)
         if h is None:
@@ -304,7 +304,7 @@ class Deck:
         return y + h
 
     def table(self, sld, y, headers, rows, widths, rh=228600, x=ML,
-              head_fill=NAVY, size=10, head_size=10, bold_cols=(), col_colors=None):
+              head_fill=NAVY, size=11.5, head_size=11.5, bold_cols=(), col_colors=None):
         tw = sum(widths)
         cx = x
         for i, hcell in enumerate(headers):

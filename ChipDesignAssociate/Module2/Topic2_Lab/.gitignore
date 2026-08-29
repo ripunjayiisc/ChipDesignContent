@@ -1,0 +1,9 @@
+build/
+*.json
+*.log
+*.vvp
+*.vcd
+*.cf
+*.o
+work-obj*.cf
+__pycache__/

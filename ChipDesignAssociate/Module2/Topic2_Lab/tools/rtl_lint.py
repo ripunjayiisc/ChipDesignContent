@@ -39,9 +39,17 @@ L005  if without else in a combinational block
 L006  case without default in a combinational block
       The same problem, wearing a different hat.
 
+      L005 and L006 both understand the DEFAULT-ASSIGNMENT IDIOM: if the block
+      opens by assigning every one of its outputs unconditionally, then no
+      later if or case can leave anything unassigned, and neither rule fires.
+      That idiom is the recommended way to write a next-state or output block
+      (see fsm/traffic.v), so a linter that flagged it would be worse than no
+      linter at all - people switch off tools that cry wolf.
+
 L007  a signal assigned in more than one always block
       Two drivers. In simulation the last one to run wins; in synthesis it is
-      an error or a short.
+      an error or a short. Scoped per module: two modules in one file are
+      allowed to use the same signal name, because they are different scopes.
 
 WHAT THIS TOOL IS NOT
 ---------------------
@@ -74,12 +82,32 @@ RULES = {
 }
 
 
+# the left-hand side of an assignment: a name, an optional bit or part
+# select, then = or <= but never ==, <=, >= used as comparisons
+LHS = r"(\w+)\s*(?:\[[^\]]*\])?\s*<?=(?!=)"
+
+
 def strip_comments(src):
     """Remove // and /* */ comments, preserving line count."""
     src = re.sub(r"/\*.*?\*/", lambda m: "\n" * m.group(0).count("\n"),
                  src, flags=re.S)
     src = re.sub(r"//[^\n]*", "", src)
     return src
+
+
+def module_spans(src):
+    """Return [(first_line, last_line, name)] for each module in the file.
+
+    L007 is about two drivers on ONE net, so it has to respect module scope:
+    a `y` in mux4_case and a `y` in mux4_if are different wires in different
+    modules, not a short.
+    """
+    spans = []
+    for m in re.finditer(r"\bmodule\s+(\w+)\b.*?\bendmodule\b", src, re.S):
+        first = src.count("\n", 0, m.start()) + 1
+        last = src.count("\n", 0, m.end()) + 1
+        spans.append((first, last, m.group(1)))
+    return spans
 
 
 def find_blocks(src):
@@ -92,7 +120,9 @@ def find_blocks(src):
     for m in re.finditer(r"\balways\b\s*(@\s*\(([^)]*)\)|@\s*\*|\*)?", src):
         head = m.group(0)
         sens = (m.group(2) or "").strip()
-        star = ("@*" in head.replace(" ", "")) or (m.group(2) is None)
+        # always @*, always @(*) and a bare `always` with no list are all the
+        # wildcard form. Only a hand-written list counts as explicit.
+        star = (m.group(2) is None) or (sens == "*")
         clocked = bool(re.search(r"\b(posedge|negedge)\b", sens))
         line = src.count("\n", 0, m.start()) + 1
 
@@ -129,7 +159,15 @@ def lint(path):
         text = lines[line - 1].strip() if 0 < line <= len(lines) else ""
         issues.append(Issue(rule, line, text[:70], detail))
 
-    assigned_in = {}          # signal -> set of always-block start lines
+    spans = module_spans(src)
+
+    def module_of(line):
+        for first, last, name in spans:
+            if first <= line <= last:
+                return name
+        return "(file scope)"
+
+    assigned_in = {}          # (module, signal) -> set of always-block lines
 
     for line, sens, star, clocked, body in find_blocks(src):
         # The character class already excludes <= >= != == , so these two
@@ -146,24 +184,35 @@ def lint(path):
         if not clocked and not star and sens:
             add("L004", line, "list is (%s)" % sens)
 
-        if not clocked:
+        # --- the default-assignment idiom -------------------------------
+        # Signals written unconditionally before the first if/case cannot be
+        # latched by anything that comes after, whatever it leaves out.
+        cond = re.search(r"\b(if|case[xz]?)\b", body)
+        prefix = body[:cond.start()] if cond else body
+        defaults = set(re.findall(LHS, prefix))
+        all_lhs = set(re.findall(LHS, body))
+        fully_defaulted = bool(all_lhs) and all_lhs <= defaults
+
+        if not clocked and not fully_defaulted:
             for im in re.finditer(r"\bif\b", body):
                 tail = body[im.end():]
                 # an else belonging to this if, before the block closes
                 if not re.search(r"\belse\b", tail):
                     add("L005", line + body[:im.start()].count("\n"))
                     break
-            if re.search(r"\bcase[xz]?\b", body) and not re.search(r"\bdefault\b", body):
+            if (re.search(r"\bcase[xz]?\b", body)
+                    and not re.search(r"\bdefault\b", body)):
                 cm = re.search(r"\bcase[xz]?\b", body)
                 add("L006", line + body[:cm.start()].count("\n"))
 
-        for am in re.finditer(r"(\w+)\s*(?:\[[^\]]*\])?\s*<?=(?!=)", body):
-            assigned_in.setdefault(am.group(1), set()).add(line)
+        mod = module_of(line)
+        for name in re.findall(LHS, body):
+            assigned_in.setdefault((mod, name), set()).add(line)
 
-    for sig, blocks in sorted(assigned_in.items()):
+    for (mod, sig), blocks in sorted(assigned_in.items()):
         if len(blocks) > 1:
-            add("L007", min(blocks), "%s driven from lines %s"
-                % (sig, ", ".join(str(b) for b in sorted(blocks))))
+            add("L007", min(blocks), "%s.%s driven from lines %s"
+                % (mod, sig, ", ".join(str(b) for b in sorted(blocks))))
 
     return sorted(issues, key=lambda i: (i.line, i.rule))
 

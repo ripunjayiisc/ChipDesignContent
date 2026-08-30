@@ -14,7 +14,7 @@ def R(t, **kw):
 
 def build(d):
     d.section_slide(
-        "THEORY 3", "The Patterns Every Block Is Built From",
+        "THEORY 4", "The Patterns Every Block Is Built From",
         "Three structures account for almost all synthesisable RTL. Once you "
         "can recognise them, most designs stop looking unfamiliar.",
         ["Datapath and controller — the split that organises everything else",
@@ -25,12 +25,12 @@ def build(d):
         accent=VIOLET)
 
     # =============================================== datapath + controller
-    s = d.slide("3.1 · THE SPLIT", "Datapath and Controller")
+    s = d.slide("4.1 · THE SPLIT", "Datapath and Controller")
     y = d.image(s, TOP - 45720, "datapath_controller", 4950000)
     d.lead(s, y + G, [[R("A UART, a cache, a GPU. Different sizes, the same two "
                          "halves.", b=True, c=NAVY, s=12.0)]], h=228600)
 
-    s = d.slide("3.1 · THE SPLIT", "The Worked Example: Accumulate N Samples")
+    s = d.slide("4.1 · THE SPLIT", "The Worked Example: Accumulate N Samples")
     y = d.code(s, TOP, [
         "// the CONTROLLER decides.  Narrow. No data passes through it.",
         "always @(*) begin",
@@ -54,7 +54,7 @@ def build(d):
                "looks at state.", b=True, c=NAVY)]],
            accent=VIOLET, h=822960)
 
-    s = d.slide("3.1 · THE SPLIT", "Measured, On the Accumulator")
+    s = d.slide("4.1 · THE SPLIT", "Measured, On the Accumulator")
     y = d.table(s, TOP,
                 ["module", "cells", "flip-flops", "what it contains"],
                 [["accum_ctrl", "10", "2", "three states, five control outputs"],
@@ -78,12 +78,12 @@ def build(d):
                          "next to the accumulated sum.", s=12.0)]], h=228600)
 
     # ============================================================== the FSM
-    s = d.slide("3.2 · THE FSM", "The Three-Block Coding Pattern")
+    s = d.slide("4.2 · THE FSM", "The Three-Block Coding Pattern")
     y = d.image(s, TOP - 45720, "fsm_pattern", 4950000)
     d.lead(s, y + G, [[R("Every state machine in this lab is written exactly like "
                          "this. So is most industrial RTL.", s=12.0)]], h=228600)
 
-    s = d.slide("3.2 · THE FSM", "Why Not One Block?")
+    s = d.slide("4.2 · THE FSM", "Why Not One Block?")
     y = d.lead(s, TOP, [[R("You can write a working state machine in a single "
                            "clocked block, with the case statement inside it. "
                            "Nothing about it is illegal.", s=12.0)]], h=274320)
@@ -107,7 +107,7 @@ def build(d):
                          "right in, which over a project is the same thing.",
                          b=True, c=NAVY, s=12.0)]], h=274320)
 
-    s = d.slide("3.2 · THE FSM", "The Default Assignment, and Why It Matters",
+    s = d.slide("4.2 · THE FSM", "The Default Assignment, and Why It Matters",
                 accent=GREEN)
     y = d.code(s, TOP, [
         "always @(*) begin",
@@ -133,35 +133,35 @@ def build(d):
            accent=GREEN, fill=CARD_G, h=1005840)
 
     # ========================================================= Moore/Mealy
-    s = d.slide("3.3 · MOORE AND MEALY", "Where the Output Comes From")
+    s = d.slide("4.3 · MOORE AND MEALY", "Where the Output Comes From")
     y = d.image(s, TOP - 45720, "moore_mealy", 4950000)
     d.lead(s, y + G, [[R("One structural difference — whether the output logic can "
                          "see the input. Everything else follows.", s=12.0)]],
            h=228600)
 
-    s = d.slide("3.3 · MOORE AND MEALY", "The Differences, In One Table")
+    s = d.slide("4.3 · MOORE AND MEALY", "The Differences, In One Table")
     y = d.image(s, TOP - 45720, "moore_mealy_table", 4950000)
     d.lead(s, y + G, [[R("Five rows. The last one is measured, not assumed.",
                          s=12.0)]], h=228600)
 
-    s = d.slide("3.3 · MOORE AND MEALY", "The '101' Detector, Moore")
+    s = d.slide("4.3 · MOORE AND MEALY", "The '101' Detector, Moore")
     y = d.image(s, TOP - 45720, "seq101_moore_states", 4950000)
     d.lead(s, y + G, [[R("Four states. The output is decoded from the state "
                          "register alone.", s=12.0)]], h=228600)
 
-    s = d.slide("3.3 · MOORE AND MEALY", "The Same Detector, Mealy")
+    s = d.slide("4.3 · MOORE AND MEALY", "The Same Detector, Mealy")
     y = d.image(s, TOP - 45720, "seq101_mealy_states", 4950000)
     d.lead(s, y + G, [[R("Three states. The output is written on the arrows, as "
                          "input / output.", s=12.0)]], h=228600)
 
-    s = d.slide("3.3 · MOORE AND MEALY", "The One-Cycle Difference, Measured",
+    s = d.slide("4.3 · MOORE AND MEALY", "The One-Cycle Difference, Measured",
                 accent=AMBER)
     y = d.image(s, TOP - 45720, "moore_mealy_timing", 4950000)
     d.lead(s, y + G, [[R("Five matches, zero mismatches against a golden model "
                          "computed from the stream itself.", b=True, c=GREEN,
                          s=12.0)]], h=228600)
 
-    s = d.slide("3.3 · MOORE AND MEALY", "Choosing Between Them")
+    s = d.slide("4.3 · MOORE AND MEALY", "Choosing Between Them")
     y = d.tiers(s, TOP, [
         ("CHOOSE MOORE",
          "when the output leaves the block, drives other logic, or is timing "
@@ -187,25 +187,25 @@ def build(d):
            accent=AMBER, fill=CARD_A, h=1005840)
 
     # ============================================================ encoding
-    s = d.slide("3.4 · ENCODING", "The Choice You Make By Typing Numbers")
+    s = d.slide("4.4 · ENCODING", "The Choice You Make By Typing Numbers")
     y = d.image(s, TOP - 45720, "state_encoding", 4950000)
     d.lead(s, y + G, [[R("Same behaviour, different hardware — and the direction of "
                          "the difference is not the one usually quoted.",
                          b=True, c=RED, s=12.0)]], h=228600)
 
-    s = d.slide("3.4 · ENCODING", "Which Encoding, and When")
+    s = d.slide("4.4 · ENCODING", "Which Encoding, and When")
     y = d.image(s, TOP - 45720, "state_encoding_choice", 4950000)
     d.lead(s, y + G, [[R("Three encodings, three different reasons. None of them "
                          "is a default.", s=12.0)]], h=228600)
 
     # =========================================================== the timer
-    s = d.slide("3.5 · A CONTROLLER WITH A TIMER", "The Traffic Light")
+    s = d.slide("4.5 · A CONTROLLER WITH A TIMER", "The Traffic Light")
     y = d.image(s, TOP - 45720, "traffic_states", 4950000)
     d.lead(s, y + G, [[R("Two safety properties, checked on every one of forty "
                          "cycles. Zero violations.", b=True, c=GREEN, s=12.0)]],
            h=228600)
 
-    s = d.slide("3.5 · A CONTROLLER WITH A TIMER", "Checking a Property Instead of "
+    s = d.slide("4.5 · A CONTROLLER WITH A TIMER", "Checking a Property Instead of "
                 "a Waveform", accent=GREEN)
     y = d.code(s, TOP, [
         "// P1 : the two roads are never green at the same time",
@@ -233,12 +233,12 @@ def build(d):
                          "solver.", s=12.0)]], h=228600)
 
     # ============================================================== reuse
-    s = d.slide("3.6 · FROM MODULE TO IP", "Parameters, Hierarchy and Generate")
+    s = d.slide("4.6 · FROM MODULE TO IP", "Parameters, Hierarchy and Generate")
     y = d.image(s, TOP - 45720, "hierarchy_generate", 4950000)
     d.lead(s, y + G, [[R("Eight flip-flops per stage, exactly N stages, measured at "
                          "four depths.", b=True, c=GREEN, s=12.0)]], h=228600)
 
-    s = d.slide("3.6 · FROM MODULE TO IP", "What Elaboration Actually Does")
+    s = d.slide("4.6 · FROM MODULE TO IP", "What Elaboration Actually Does")
     y = d.code(s, TOP, [
         "module delayline #(parameter W = 8, parameter N = 4)",
         "                 (input clk, rst, en, input [W-1:0] din,",
@@ -264,7 +264,7 @@ def build(d):
                          s=12.0)]], h=274320)
 
     # ========================================================== checkpoint
-    s = d.slide("THEORY 3 · CHECKPOINT", "Eight Questions", accent=GREEN)
+    s = d.slide("THEORY 4 · CHECKPOINT", "Eight Questions", accent=GREEN)
     y = d.table(s, TOP,
                 ["#", "Question", "The answer in one line"],
                 [["1", "What are the two halves of almost every block?",
@@ -284,6 +284,6 @@ def build(d):
                  ["8", "Does a generate loop exist in the netlist?",
                   "no — it is elaborated away before synthesis"]],
                 [548640, 5029200, 5669280], rh=310896, bold_cols=(0,), size=11.0)
-    d.lead(s, y + G, [[R("Theory 4 is about the notation — which turns out to be "
-                         "the least important part.", b=True, c=GREEN, s=12.0)]],
+    d.lead(s, y + G, [[R("The practical section is where every number in this deck was "
+                         "produced.", b=True, c=GREEN, s=12.0)]],
            h=274320)

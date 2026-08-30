@@ -13,7 +13,10 @@ import path, so every script starts with `import _boot`.
 ```bash
 cd ChipDesignAssociate/Module2/build/topic2
 
-# 1. the 60 diagrams  ->  topic2/img/*.png
+# 1. the 66 diagrams  ->  topic2/img/*.png
+python3 t2_physical.py   # 6  the physical picture underneath RTL: the chip,
+                         #    the signal, the register, the clock cycle,
+                         #    the abstraction ladder, the designer's view
 python3 t2_rtl.py        # 6  what RTL is, the ladder, proof
 python3 t2_method.py     # 9  the flow, the subset, latches, lint, reuse
 python3 t2_struct.py     # 9  comb vs seq, the discipline, datapath+controller,
@@ -119,6 +122,7 @@ their commands.
 ## Files
 
 ```
+t2_physical.py      diagrams: the physical picture underneath RTL
 t2_rtl.py           diagrams: what RTL is, the abstraction ladder, proof
 t2_method.py        diagrams: the design process and methodology
 t2_struct.py        diagrams: how a real block is put together
@@ -128,15 +132,17 @@ t2_hdl.py           diagrams: hardware description languages
 t2_tools.py         diagrams: tools, installation, the lab programme
 t2_outcomes.py      diagrams: terminal and learning outcomes, syllabus map
 
-t2_deck_a.py        deck: front matter, outcomes, Theory 1   (27 slides)
-t2_deck_b.py        deck: Theory 2 — the methodology         (16 slides)
-t2_deck_c2.py       deck: Theory 3 — the patterns            (20 slides)
-t2_deck_c.py        deck: Theory 4 and the practical part    (33 slides)
-build_deck_m2t2.py  assembles the 96-slide deck
+t2_deck_a.py        deck: front matter, outcomes, Theory 1   (25 slides)
+t2_deck_lang.py     deck: Theory 2 — the language            (20 slides)
+t2_deck_b.py        deck: Theory 3 — the methodology         (21 slides)
+t2_deck_c2.py       deck: Theory 4 — the patterns            (20 slides)
+t2_deck_c.py        deck: the practical component            (17 slides)
+build_deck_m2t2.py  assembles the 103-slide deck, in that order
 
-m2t2_wb1.py         workbook: front matter, outcomes, Theory Part 1
-m2t2_wb2.py         workbook: Theory Part 2, and Part 4 (build_hdl)
-m2t2_wb2b.py        workbook: Theory Part 3 — the patterns
+m2t2_wb1.py         workbook: front matter, outcomes, Part 1 (what RTL is)
+m2t2_wb2.py         workbook: Part 3 (build) and Part 2 (build_hdl) — note
+                    that the build ORDER, not the file order, sets the parts
+m2t2_wb2b.py        workbook: Part 4 — the patterns
 m2t2_wb3.py         workbook: Practical — tools, and fourteen tutorials
 m2t2_wb4.py         workbook: 103 exercises, solutions, reference card
 build_workbook_m2t2.py
@@ -156,3 +162,20 @@ rebuilt automatically, so nothing about them has changed on disk. If you do
 rebuild one, expect its text to come out larger and its layouts to need the
 same treatment: reshape the diagrams to `panel()`, then run `checkfit.py` and
 fix whatever it flags.
+
+## Why the sections are in this order
+
+The deck teaches in this sequence, and the order is deliberate:
+
+| | why it has to come here |
+|---|---|
+| **Theory 1** · what RTL is | Starts at the silicon — what is on the chip, what a signal is, what a register does, what happens between two clock edges — and only then gives the definition. An abstraction is not learnable before the thing it abstracts. |
+| **Theory 2** · the language | You cannot discuss what a tool will build from your code until you can read the code. `<=` versus `=` lives here, because the rule is a consequence of the clock edge taught in Theory 1. |
+| **Theory 3** · the methodology | The process that turns the one into the other, now that both are understood. Opens with the abstraction ladder demonstrated in code. |
+| **Theory 4** · the patterns | The standard structures — datapath and controller, state machines, reuse — which assume all three above. |
+| **Practical** | Every number quoted anywhere in the deck. |
+
+An earlier version defined RTL on slide 8 with no physical grounding, put the
+abstraction ladder eleven slides after the thing it frames, and taught the
+language last while showing Verilog from slide 8 onward. If you restructure
+this deck again, keep the dependency order above.

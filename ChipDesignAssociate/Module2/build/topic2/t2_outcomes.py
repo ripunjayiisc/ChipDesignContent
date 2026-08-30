@@ -102,23 +102,24 @@ def syllabus_map():
           FS_TITLE)
 
     rows = [["Basics of register transfer level (RTL) design", "Theory 1",
-             "6-25"],
-            ["Overview of RTL design process and methodology", "Theory 2",
-             "26-41"],
-            ["   ... and the patterns that process produces", "Theory 3",
-             "42-59"],
-            ["Introduction to HDLs such as Verilog or VHDL", "Theory 4",
-             "60-75"],
+             "7-25"],
+            ["Introduction to HDLs such as Verilog or VHDL", "Theory 2",
+             "26-45"],
+            ["Overview of RTL design process and methodology", "Theory 3",
+             "46-66"],
+            ["   ... and the patterns that process produces", "Theory 4",
+             "67-86"],
             ["Practical: RTL Design and Implementation Labs", "Labs A-N",
-             "76-92"]]
+             "87-103"]]
     table(ax, 4, H - 9.5, ["syllabus phrase", "section", "slides"], rows,
           [56, 20, 16], 4.6, size=FS_TABLE, bold_col=[1])
 
-    ax.text(50, 8.5, "The syllabus gives this subtopic 4 notional hours.",
+    ax.text(50, 8.5, "The rows are in TEACHING order, not syllabus order.",
             fontsize=FS_BODY, color=AMBER, ha="center", fontweight="bold")
-    ax.text(50, 3.5, "Enough to define the terms; not enough to make anyone "
-                     "believe them. Lecture from the summary slides to fit four "
-                     "hours;\ndeliver it properly by running the lab alongside.",
+    ax.text(50, 3.5, "The language has to come before the methodology, because "
+                     "you cannot discuss what a tool will build\nfrom your code "
+                     "until you can read the code. All four syllabus phrases "
+                     "are still covered in full.",
             fontsize=FS_SMALL, color=BODY, ha="center")
     save(f, "syllabus_map")
 
@@ -128,13 +129,13 @@ def topic_structure():
     title(ax, 50, H - 4.5, "How this session runs", FS_TITLE)
 
     parts = [("THEORY 1", "What RTL is",
-              "the two kinds of logic, the discipline, abstraction", TEAL),
-             ("THEORY 2", "The methodology",
-              "the flow, the subset, the rules, and coding style", VIOLET),
-             ("THEORY 3", "The patterns",
-              "datapath and controller, state machines, parameters", AMBER),
-             ("THEORY 4", "HDLs", "what an HDL is, and Verilog against VHDL",
-              NAVY),
+              "the silicon, the clock edge, the ladder of abstraction", TEAL),
+             ("THEORY 2", "The language",
+              "an HDL is not a program; Verilog and VHDL", NAVY),
+             ("THEORY 3", "The methodology",
+              "the flow, the subset, the rules, what gets built", VIOLET),
+             ("THEORY 4", "The patterns",
+              "datapath and controller, state machines, reuse", AMBER),
              ("PRACTICAL", "Labs A-N", "26 hours, 103 exercises, all measured",
               GREEN)]
     y = H - 9.0
@@ -150,8 +151,8 @@ def topic_structure():
                 color=BODY)
         y -= bh + 1.1
 
-    ax.text(50, 3.0, "RTL is not a language and it is not a tool. It is a way "
-                     "of thinking about hardware.",
+    ax.text(50, 3.0, "Each section is a prerequisite for the next. Taught in "
+                     "any other order, the ideas arrive unsupported.",
             fontsize=FS_BODY, color=NAVY, ha="center", fontweight="bold")
     save(f, "topic_structure")
 

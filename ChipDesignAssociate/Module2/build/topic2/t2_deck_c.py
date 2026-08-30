@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Module 2 Topic 2 deck — Theory 3 (HDLs) and the practical component."""
+"""Module 2 Topic 2 deck - the practical component."""
 import _boot
 from deckkit import *
 
@@ -13,119 +13,6 @@ def R(t, **kw):
 
 
 def build(d):
-    d.section_slide(
-        "THEORY 4", "Introduction to Hardware Description Languages",
-        "The syllabus says \"HDLs such as Verilog or VHDL\". The word doing "
-        "the work is OR.",
-        ["Why an HDL is not a programming language",
-         "Everything happens at once",
-         "The parts of a module, and the word reg that confuses everyone",
-         "Verilog and VHDL as reference cards, and a line-for-line mapping",
-         "The anatomy of a testbench that checks itself",
-         "Both languages actually run, and their transcripts diffed"],
-        accent=TEAL)
-
-    s = d.slide("4.1 · NOT A PROGRAM", "An HDL Is Not a Programming Language")
-    y = d.image(s, TOP - 45720, "what_is_hdl", 4950000)
-    d.lead(s, y + G, [[R("You are not writing instructions for a machine to follow. "
-                         "You are writing a description of a machine.", b=True,
-                         c=NAVY, s=12.0)]], h=274320)
-
-    s = d.slide("4.2 · CONCURRENCY", "Everything Happens At Once")
-    y = d.image(s, TOP - 45720, "concurrency", 4950000)
-    d.lead(s, y + G, [[R("Write those three assign lines in any order you like — the "
-                         "circuit is identical.", s=12.0)]], h=274320)
-
-    s = d.slide("4.3 · ANATOMY", "The Parts of a Verilog Module")
-    y = d.image(s, TOP - 45720, "module_anatomy", 4950000)
-    d.lead(s, y + G, [[R("reg does not mean register. What creates a flip-flop is "
-                         "assigning inside always @(posedge clk) — nothing else.",
-                         b=True, c=AMBER, s=12.0)]], h=228600)
-
-    s = d.slide("4.4 · SIMULATION", "How a Simulator Runs an HDL")
-    y = d.image(s, TOP - 45720, "event_simulation", 4950000)
-    d.lead(s, y + G, [[R("The order blocks are evaluated in is genuinely unspecified. "
-                         "That is why non-blocking assignment exists.", s=12.0)]],
-           h=228600)
-
-    # --------------------------------------------------- reference cards
-    s = d.slide("4.5 · REFERENCE", "Verilog On One Page")
-    y = d.image(s, TOP - 45720, "verilog_card", 4950000)
-    d.lead(s, y + G, [[R("Not the whole language — the part that synthesises, "
-                         "which is much smaller.", s=12.0)]], h=228600)
-
-    s = d.slide("4.5 · REFERENCE", "Verilog: Blocks and Operators")
-    y = d.image(s, TOP - 45720, "verilog_card2", 4950000)
-    d.lead(s, y + G, [[R("Three kinds of block, and the operators you will "
-                         "actually use.", s=12.0)]], h=228600)
-
-    s = d.slide("4.5 · REFERENCE", "VHDL On One Page")
-    y = d.image(s, TOP - 45720, "vhdl_card", 4950000)
-    d.lead(s, y + G, [[R("Everything on this page has an exact counterpart on the "
-                         "previous one.", s=12.0)]], h=228600)
-
-    s = d.slide("4.5 · REFERENCE", "VHDL: Types, and What They Catch")
-    y = d.image(s, TOP - 45720, "vhdl_card2", 4950000)
-    d.lead(s, y + G, [[R("The type system is the real difference between the two "
-                         "languages.", s=12.0)]], h=228600)
-
-    s = d.slide("4.5 · REFERENCE", "Verilog to VHDL, Line For Line  (1 of 2)")
-    y = d.image(s, TOP - 45720, "lang_mapping", 4950000)
-    d.lead(s, y + G, [[R("Learn one and you can read the other in an afternoon. "
-                         "These two tables are the afternoon.", b=True, c=NAVY,
-                         s=12.0)]], h=228600)
-
-    s = d.slide("4.5 · REFERENCE", "Verilog to VHDL, Line For Line  (2 of 2)")
-    y = d.image(s, TOP - 45720, "lang_mapping2", 4950000)
-    d.lead(s, y + G, [[R("Nothing in this topic depends on which one you use.",
-                         s=12.0)]], h=228600)
-
-    s = d.slide("4.5 · REFERENCE", "What a Testbench Is Made Of")
-    y = d.image(s, TOP - 45720, "testbench_anatomy", 4950000)
-    d.lead(s, y + G, [[R("Topic 5 covers verification properly. These six parts are "
-                         "the minimum you need to finish Topic 2.", s=12.0)]],
-           h=228600)
-
-    s = d.slide("4.6 · TWO LANGUAGES", "Verilog and VHDL, Side By Side")
-    y = d.image(s, TOP - 45720, "verilog_vhdl", 4950000)
-    d.lead(s, y + G, [[R("None of those differences are about hardware. Both describe "
-                         "registers, logic and hierarchy; both synthesise to the same "
-                         "gates.", s=12.0)]], h=228600)
-
-    s = d.slide("4.6 · TWO LANGUAGES", "Both Designs, In Both Languages, Actually "
-                "Run")
-    y = d.image(s, TOP - 45720, "two_languages_result", 4250000)
-    d.card(s, y + G, "Not \"they look similar\"",
-           [[R("Both transcripts were compared line by line by diff, and there was "
-               "nothing to report. The state machine is the interesting one: VHDL "
-               "gives the states a real enumerated TYPE, so an illegal state will "
-               "not compile. Verilog gives them numbers.", s=12.0)]],
-           accent=GREEN, fill=CARD_G, h=868680)
-
-    s = d.slide("4.7 · WHICH ONE", "Which HDL Should You Learn?")
-    y = d.image(s, TOP - 45720, "hdl_choose", 4950000)
-    d.lead(s, y + G, [[R("Learn the concepts. The notation follows in an afternoon.",
-                         b=True, c=GREEN, s=12.0)]], h=228600)
-
-    s = d.slide("THEORY 4 · CHECKPOINT", "Seven Questions", accent=GREEN)
-    y = d.table(s, TOP,
-                ["#", "Question", "The answer in one line"],
-                [["1", "Name the biggest difference between an HDL and a program.",
-                  "everything in an HDL runs all the time, concurrently"],
-                 ["2", "Does the order of assign statements matter?",
-                  "no — they describe hardware that exists together"],
-                 ["3", "What does reg actually mean?",
-                  "assigned in a procedural block; NOT a flip-flop"],
-                 ["4", "Why is the evaluation order unspecified?",
-                  "the standard leaves it free; <= makes it not matter"],
-                 ["5", "Verilog or VHDL?",
-                  "either — the concepts are identical, and the lab proves it"],
-                 ["6", "What does VHDL catch that Verilog does not?",
-                  "illegal states, non-exhaustive cases, width mismatches"],
-                 ["7", "Where must a testbench's expected answer come from?",
-                  "the stimulus — never from the design under test"]],
-                [548640, 5029200, 5669280], rh=310896, bold_cols=(0,), size=11.2)
-
     # ==================================================== PRACTICAL section
     d.section_slide(
         "PRACTICAL", "Labs A–N",
@@ -363,8 +250,14 @@ def build(d):
         accent=AMBER, size=12.0, step=457200)
 
     # -------------------------------------------------------------- summary
-    s = d.slide("SUMMARY", "Topic 2 In Fourteen Lines", accent=GREEN)
+    s = d.slide("SUMMARY", "Topic 2 In Eighteen Lines", accent=GREEN)
     d.bullets(s, TOP, [
+        "A signal is a voltage on a wire, and changing it takes real time.",
+        "A register is a door the clock edge opens for an instant; between "
+        "edges nothing you can see changes.",
+        "One clock period = clk-to-Q, then settling, then stable, then setup.",
+        "RTL is a RUNG on the abstraction ladder: below the algorithm, above "
+        "the gate netlist.",
         "RTL says which registers exist and what transfers into them. Nothing else.",
         "There are two kinds of logic, combinational and sequential, and no third.",
         "<= reads every right-hand side first, then updates together. = does not — "

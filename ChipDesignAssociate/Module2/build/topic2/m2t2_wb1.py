@@ -109,22 +109,23 @@ def build(w):
 
     w.callout("What's inside", [
         [B("THEORY"), N("")],
-        [B("Part 1  "), N("What RTL is — the two kinds of logic, the synchronous "
-                          "discipline, registers and transfers, blocking against "
-                          "non-blocking, four levels of abstraction, proof, and the "
-                          "running example")],
-        [B("Part 2  "), N("The design process and methodology — the flow, the "
-                          "synthesisable subset, inferred latches, the "
-                          "simulate/synthesise mismatch, seven coding rules, "
-                          "micro-architecture, reuse and coding style")],
-        [B("Part 3  "), N("The patterns every block is built from — datapath and "
+        [B("Part 1  "), N("What RTL is — what is physically on the chip, what a "
+                          "signal is, what a register does, what happens between "
+                          "two clock edges, the ladder of abstraction, and only "
+                          "then the definition, the two kinds of logic and the "
+                          "synchronous discipline")],
+        [B("Part 2  "), N("The language you say it in — why an HDL is not a "
+                          "programming language, concurrency, the anatomy of a "
+                          "module, blocking against non-blocking, event-driven "
+                          "simulation, and Verilog against VHDL")],
+        [B("Part 3  "), N("The design process and methodology — the abstraction "
+                          "ladder demonstrated, proof, the flow, the synthesisable "
+                          "subset, inferred latches, the simulate/synthesise "
+                          "mismatch, the coding rules and coding style")],
+        [B("Part 4  "), N("The patterns every block is built from — datapath and "
                           "controller, the finite state machine, Moore against "
                           "Mealy, state encoding, and parameters, hierarchy and "
                           "generate")],
-        [B("Part 4  "), N("HDLs — why an HDL is not a programming language, "
-                          "concurrency, the anatomy of a module, event-driven "
-                          "simulation, Verilog against VHDL, reference cards, and "
-                          "what a testbench is made of")],
         [B("PRACTICAL"), N("")],
         [B("Part 5  "), N("Tools and installation")],
         [B("Part 6  "), N("Fourteen guided tutorials, A to N, at the keyboard")],
@@ -148,7 +149,166 @@ def build(w):
     # ================================================================ Part 1
     w.h1("Part 1 · What RTL Is")
 
-    w.h2("1.1  The name is the definition")
+    w.para([N("RTL is an abstraction, and an abstraction is only learnable "
+              "once you have seen the thing it abstracts. So this part starts "
+              "with the silicon and works upwards. By the time the definition "
+              "arrives in section 1.4, every word in it will already mean "
+              "something physical.")])
+
+    w.h2("1.1  What is actually on the chip")
+
+    w.image("chip_physical")
+
+    w.para([N("A digital chip is a pattern of four kinds of physical object, "
+              "and nothing else:")])
+    w.bullets([
+        [B("A transistor "), N("is a switch. A voltage on its gate either lets "
+           "current flow between its other two terminals, or stops it. It is "
+           "perhaps 20 nanometres across, and a modern chip has billions.")],
+        [B("A gate "), N("is four to ten transistors wired so that the output "
+           "voltage is a Boolean function of the input voltages: NAND, NOR, an "
+           "inverter.")],
+        [B("A flip-flop "), N("is about twenty transistors wired so that it "
+           "remembers one bit, and changes that bit only when a clock edge "
+           "arrives.")],
+        [B("A block "), N("is thousands of those, wired together to do "
+           "something useful: a counter, a filter, a processor.")],
+    ])
+
+    w.callout("Keep this in view for the whole topic", [
+        [N("Everything you write from here on is a way of TALKING about a "
+           "pattern of those four objects. RTL does not replace them and it "
+           "does not hide them - it lets you describe them without drawing "
+           "each one.")],
+    ], color=NAVY, bar="0E2A47")
+
+    w.h2("1.2  A signal is a voltage on a wire")
+
+    w.image("signal_voltage")
+
+    w.para([N("This is the single most useful piece of physical intuition in "
+              "the whole course, and it is the one most often skipped.")])
+
+    w.para([N("A 1 is not a number travelling down the wire. A wire is a thin "
+              "strip of metal with capacitance, and a 1 means "), B("its "
+              "voltage is somewhere in the upper band"), N(" - close enough to "
+              "the supply that every gate reading it will agree it is a 1. A 0 "
+              "means the voltage is in the lower band. Between the two there "
+              "is a forbidden region where a reading gate may decide either "
+              "way, and a well-designed circuit never rests there.")])
+
+    w.h3("Why that has consequences")
+    w.para([N("Changing a wire from 0 to 1 means "), B("charging a capacitor"),
+            N(", and charging a capacitor takes time and energy. That single "
+              "fact is where the rest of the course comes from:")])
+    w.table(["The physical fact", "What it becomes later"],
+            [["a wire takes time to change",
+              "propagation delay, and the maximum clock frequency"],
+             ["a longer wire takes longer",
+              "why placement and routing affect timing at all"],
+             ["a gate needs its input settled before it can be trusted",
+              "setup time"],
+             ["a gate needs its input held briefly after the edge",
+              "hold time"],
+             ["charging costs energy", "dynamic power, and why clocks are gated"]],
+            widths=[3.0, 3.9], size=10.5, bold_cols=(0,), align_center=False)
+
+    w.para([N("None of that appears in an RTL description. All of it is still "
+              "true underneath, and Topic 6 and Module 3 are about what "
+              "happens when you forget.")])
+
+    w.h2("1.3  What a register physically does")
+
+    w.image("register_physical")
+
+    w.para([N("A flip-flop is not a variable, and it is not memory in the "
+              "software sense. It is closer to a "), B("door that the clock "
+              "edge opens for an instant"), N(". Its D input can wander as "
+              "much as it likes during the cycle; at the rising edge, whatever "
+              "value D happens to hold is captured, and Q then presents that "
+              "value - flat and unchanging - until the next edge.")])
+
+    w.callout("Why that one property makes design possible", [
+        [N("Between two clock edges, nothing that any other block can observe "
+           "changes. The whole design moves in discrete steps.")],
+        [N("That is what lets you reason about a million-gate chip at all. "
+           "Without it you would have to think about every signal at every "
+           "instant, and nobody can do that.")],
+    ], color=VIOLET, fill="F6F2FC", bar="7A4FBF")
+
+    w.h2("1.4  What happens between two clock edges")
+
+    w.image("clock_cycle_anatomy")
+
+    w.para([N("This is the picture to keep in your head for the rest of the "
+              "course. One clock period has four phases:")])
+
+    w.numbered([
+        [B("clk to Q. "), N("The edge arrives and the register drives its new "
+           "value out. This takes a real, non-zero time, and it is the first "
+           "thing that eats into your clock period.")],
+        [B("Settling. "), N("The combinational logic between registers "
+           "recomputes. While it does, its output is briefly WRONG: signals "
+           "arrive down different paths at different times, so the output "
+           "glitches, possibly several times.")],
+        [B("Stable. "), N("The logic has finished. The value on the wire is "
+           "now the correct answer, and it stays there.")],
+        [B("Setup. "), N("Just before the next edge the value must ALREADY "
+           "have been stable for a short window, or the capturing register may "
+           "take the wrong value - or go metastable.")],
+    ])
+
+    w.callout("Two things worth taking from this picture", [
+        [B("The glitches are harmless. "), N("Nothing looks at that wire until "
+           "the next edge, by which time it has settled. Beginners often try "
+           "to design them away; there is no need, and in synchronous logic "
+           "you cannot.")],
+        [B("You never state how long the settling takes. "),
+         N("You state what the value must BE by the end of the period. Working "
+           "out whether the logic actually fits is the job of synthesis and of "
+           "static timing analysis, and that is Topic 6.")],
+    ], color=AMBER, fill="FFF7EC", bar="C77514")
+
+    w.h2("1.5  The ladder of abstraction, and which rung RTL is")
+
+    w.image("abstraction_stack")
+
+    w.para([N("You now know what the hardware is. You could, in principle, "
+              "design by drawing it - and for a handful of gates people once "
+              "did. The reason nobody does today is arithmetic: a modern block "
+              "has millions of gates, and no human can place a million of "
+              "anything correctly.")])
+
+    w.para([N("So digital design is organised as a ladder of descriptions. "
+              "Each rung says less about the implementation and more about the "
+              "intent:")])
+
+    w.table(["Level", "What you say at this level", "What you leave out"],
+            [["algorithm", "what the system computes", "all timing"],
+             ["RTL", "which registers exist, and what transfers into them",
+              "gates, wiring, delays"],
+             ["gate", "every gate and every wire", "transistor sizes"],
+             ["transistor", "every switch, and its width", "geometry"],
+             ["layout", "the actual shapes on the silicon", "nothing"]],
+            widths=[1.2, 3.2, 2.5], size=10.5, bold_cols=(0,),
+            align_center=False)
+
+    w.callout("The sentence that locates RTL", [
+        [B("Above RTL you cannot say WHEN things happen. Below it you cannot "
+           "say anything else.")],
+        [N("Above RTL - in C, or in an algorithm - there is no clock, so you "
+           "cannot express \"this value lands in that register on this edge\". "
+           "Below RTL, at gate level, you must specify every gate, and a "
+           "human writing a real design that way will not finish.")],
+    ], color=NAVY, bar="0E2A47")
+
+    w.para([N("RTL is therefore not a language and not a tool. It is a "),
+            B("level of description"), N(" - a rung. Verilog and VHDL are two "
+              "notations for writing at that rung, which is why the syllabus "
+              "says \"HDLs such as Verilog or VHDL\" and why Part 2 treats the "
+              "choice between them as a detail.")])
+
+    w.h2("1.6  RTL, defined")
 
     w.para([N("A register transfer level description says two things, and nothing "
               "else:")])
@@ -174,8 +334,8 @@ def build(w):
 
     w.para([N("Read that block as a "), B("table"), N(", not as a sequence. All four "
               "assignments read the OLD values of x, y, z and acc, and all four land "
-              "at the same instant. That is what "), M("<="), N(" means, and section "
-              "1.5 is about why it has to work that way.")])
+              "at the same instant. That is what "), M("<="), N(" means, and Part 2 "
+              "is about why it has to work that way.")])
 
     w.h3("Watch it happen")
     w.image("rtl_transfer_trace", width=6.9)
@@ -184,8 +344,29 @@ def build(w):
               "reaches acc on the fourth. Nothing moved in between. That is the entire "
               "timing model of RTL, and it is why RTL is tractable to reason about "
               "where a gate-level netlist is not.")])
+    w.h2("1.7  Why anyone designs at this level")
 
-    w.h2("1.2  The two kinds of logic, and there is no third")
+    w.table(["", "Behavioural", "RTL", "Gate netlist"],
+            [["you write", "the algorithm", "registers and transfers", "every gate"],
+             ["timing", "none at all", "one clock period per stage",
+              "exact, per gate"],
+             ["synthesisable", "rarely", "yes — this is the target",
+              "yes, but why would you"],
+             ["a 10k-gate design", "unbuildable", "a few hundred lines",
+              "tens of thousands of lines"],
+             ["who writes it", "architects, in C or SystemC", "you",
+              "the synthesiser"]],
+            widths=[1.3, 1.8, 2.0, 1.7], size=10.0, bold_cols=(0,), align_center=False)
+
+    w.callout("RTL is where the trade lands correctly", [
+        [N("High enough that a human can write and read a real design; low enough "
+           "that a tool can build it without guessing at your intent.")],
+        [N("Above RTL you cannot say WHEN things happen. Below it you cannot say "
+           "anything else. Every industrial digital design of the last thirty years "
+           "was written at this level, and that is not fashion — it is where the "
+           "abstraction pays for itself.")],
+    ], color=TEAL)
+    w.h2("1.8  The two kinds of logic, and there is no third")
 
     w.image("comb_vs_seq", width=6.9)
 
@@ -231,7 +412,7 @@ def build(w):
            "write it.")],
     ], color=GREEN, fill="EEF7F1", bar="2A9D5C")
 
-    w.h2("1.3  The synchronous discipline")
+    w.h2("1.9  The synchronous discipline")
 
     w.image("sync_design", width=6.9)
 
@@ -277,188 +458,7 @@ def build(w):
         [N("What is not safe is a design that drifted out of the discipline because "
            "nobody noticed. You are not allowed to break these rules by accident.")],
     ], color=AMBER, fill="FFF7EC", bar="C77514")
-
-    w.h2("1.4  Why anyone designs at this level")
-
-    w.table(["", "Behavioural", "RTL", "Gate netlist"],
-            [["you write", "the algorithm", "registers and transfers", "every gate"],
-             ["timing", "none at all", "one clock period per stage",
-              "exact, per gate"],
-             ["synthesisable", "rarely", "yes — this is the target",
-              "yes, but why would you"],
-             ["a 10k-gate design", "unbuildable", "a few hundred lines",
-              "tens of thousands of lines"],
-             ["who writes it", "architects, in C or SystemC", "you",
-              "the synthesiser"]],
-            widths=[1.3, 1.8, 2.0, 1.7], size=10.0, bold_cols=(0,), align_center=False)
-
-    w.callout("RTL is where the trade lands correctly", [
-        [N("High enough that a human can write and read a real design; low enough "
-           "that a tool can build it without guessing at your intent.")],
-        [N("Above RTL you cannot say WHEN things happen. Below it you cannot say "
-           "anything else. Every industrial digital design of the last thirty years "
-           "was written at this level, and that is not fashion — it is where the "
-           "abstraction pays for itself.")],
-    ], color=TEAL)
-
-    w.h2("1.5  Blocking and non-blocking assignment")
-
-    w.image("nonblocking", width=6.9)
-
-    w.h3("The swap, worked through")
-    w.code([
-        "// NON-BLOCKING - inside always @(posedge clk)",
-        "//   Step 1: read every right-hand side, using the OLD values.",
-        "//   Step 2: update every left-hand side, all at the same instant.",
-        "",
-        "        a <= b;        //  reads old b",
-        "        b <= a;        //  reads old a",
-        "",
-        "        a and b are SWAPPED. This is what a hardware register does.",
-        "",
-        "// BLOCKING - inside always @*",
-        "//   Each statement finishes before the next one starts.",
-        "",
-        "        a = b;         //  a is now b",
-        "        b = a;         //  a is already b, so this does nothing",
-        "",
-        "        BOTH end up holding b. This is what software does."])
-
-    w.callout("Why the rule is absolute rather than stylistic", [
-        [N("Two clocked blocks using blocking assignments can see each other's "
-           "half-updated values, and which one wins depends on the order the "
-           "simulator happens to evaluate them in — an order the language standard "
-           "deliberately does not fix.")],
-        [B("Non-blocking assignment exists precisely to make that race impossible. "),
-         N("It is not a convention; it is the mechanism.")],
-    ], color=NAVY, bar="0E2A47")
-
-    w.para([N("The mirror-image rule matters too. Non-blocking assignment inside a "
-              "combinational block is legal, and it makes the block behave like a "
-              "register in simulation while synthesis builds plain logic — so the "
-              "simulation and the silicon disagree. Rules L001 and L002 of the linter "
-              "in this lab catch both directions.")])
-
-    w.h3("And what each one actually builds")
-
-    w.image("blocking_measured", width=6.9)
-
-    w.para([N("The argument above is about semantics. Here is the same argument as a "
-              "measurement. Two files, identical apart from one character per line:")])
-
-    w.code([
-        "// shift_nb.v - the intended 3-stage shift register",
-        "always @(posedge clk) begin",
-        "    q[0] <= din;   q[1] <= q[0];   q[2] <= q[1];",
-        "end",
-        "",
-        "// shift_bl.v - the same three lines with =",
-        "always @(posedge clk) begin",
-        "    q[0] = din;    q[1] = q[0];    q[2] = q[1];",
-        "end"])
-
-    w.code([
-        "$ make pitfalls",
-        "  non-blocking version : 0 wrong cycles",
-        "  blocking version     : 6 wrong cycles",
-        "",
-        "  shift_nb (non-blocking)         3 cells     3 flip-flops",
-        "  shift_bl (blocking)             1 cells     1 flip-flops"])
-
-    w.callout("Three flip-flops against one", [
-        [N("The blocking version did not build a slower shift register, or a buggy "
-           "one. It built a "), B("different circuit"), N(" — din races all the way "
-           "to q[2] in a single clock cycle, because q[0] already holds the new "
-           "value when line two reads it.")],
-        [N("It compiled. It simulated. It synthesised. No tool issued a single "
-           "warning, because nothing illegal was written. This is exactly the class "
-           "of bug a methodology rule exists to prevent, and rule L001 catches it in "
-           "about a millisecond.")],
-    ], color=RED, fill="FDECEF", bar="D6224A")
-
-    w.h2("1.6  Four levels of abstraction")
-
-    w.image("ladder", width=6.9)
-
-    w.para([N("Verilog can describe hardware at four levels. The lab writes the same "
-              "full adder at all four and simulates them together:")])
-
-    w.code([
-        "// BEHAVIOURAL - you describe the function",
-        "always @* {cout, sum} = a + b + cin;",
-        "",
-        "// DATAFLOW - you describe the Boolean form",
-        "assign sum  = a ^ b ^ cin;",
-        "assign cout = (a & b) | (b & cin) | (a & cin);",
-        "",
-        "// GATE - you name every gate and every wire",
-        "xor x1 (s1, a, b);      xor x2 (sum, s1, cin);",
-        "and a1 (ab, a, b);      and a2 (bc, b, cin);   and a3 (ac, a, cin);",
-        "or  o1 (cout, ab, bc, ac);",
-        "",
-        "// SWITCH - you place individual transistors",
-        "pmos p1 (y, vdd, a);    nmos n1 (y, gnd, a);      // one CMOS inverter"])
-
-    w.para([N("All four were driven with all eight input patterns — exhaustive, since "
-              "a full adder has only three inputs — and compared against plain "
-              "arithmetic. Zero mismatches. "),
-            B("The level of abstraction changed what was written, not what it does.")])
-
-    w.h3("And what a synthesiser makes of each")
-    w.image("ladder_synthesis", width=6.9)
-
-    w.callout("Two results worth stopping on", [
-        [B("The behavioural description produced the SMALLEST circuit "),
-         N("— five cells against six. It left the tool free to choose the Boolean "
-           "form, and the tool found a better one than the textbook expression.")],
-        [B("Dataflow and gate produced the IDENTICAL netlist. "),
-         N("Once you have written the Boolean expression you have already committed "
-           "to the structure; naming the gates adds nothing but typing.")],
-        [N("And the switch-level description was refused outright. Transistor "
-           "primitives are for library cells, not for synthesis.")],
-    ], color=AMBER, fill="FFF7EC", bar="C77514")
-
-    w.callout("The rule this gives you", [
-        [B("Write at the highest level that expresses your intent."),
-         N(" Every level you descend takes a decision away from the tool and gives "
-           "it to you — whether or not you wanted it.")],
-        [N("The tool is better than you are at choosing a gate mix, balancing a logic "
-           "tree, and doing it again consistently at 3 a.m. It is not better than you "
-           "are at deciding how many cycles the job takes, where the registers go, "
-           "what is shared, or what the interface looks like. Give it the first list; "
-           "keep the second.")],
-    ], color=GREEN, fill="EEF7F1", bar="2A9D5C")
-
-    w.h2("1.7  Simulation shows; proof settles")
-
-    w.image("proof_vs_test", width=6.9)
-
-    w.para([N("Eight patterns was exhaustive for a full adder. It stops being possible "
-              "at about thirty inputs, and real designs have thousands — so the lab "
-              "makes the same claim a different way. An "), B("equivalence check"),
-            N(" builds a miter: both designs fed the same inputs, their outputs "
-              "compared, and an assertion that the comparison always holds. A SAT "
-              "solver then tries to find any input pattern that breaks it.")])
-
-    w.code([
-        "$ make prove",
-        "  fa_behav vs fa_dataflow            EQUIVALENT   (proved, 94 SAT variables)",
-        "  fa_behav vs fa_gate                EQUIVALENT   (proved, 94 SAT variables)",
-        "  fa_dataflow vs fa_gate             EQUIVALENT   (proved, 100 SAT variables)",
-        "",
-        "  and the same checker, on a full adder with one term missing:",
-        "  fa_behav vs fa_broken              NOT EQUIVALENT"])
-
-    w.callout("That last line is the important one", [
-        [M("fa_broken.v"), N(" has one term missing from the carry, so it is wrong for "
-           "exactly one input pattern in eight. A random test could easily miss it. "
-           "The solver cannot.")],
-        [B("A checker that cannot fail is not evidence of anything. "),
-         N("You have to watch it catch a real bug before you can trust it on a design "
-           "you cannot check by hand.")],
-    ], color=RED, fill="FDECEF", bar="D6224A")
-
-    w.h2("1.8  The running example")
+    w.h2("1.10  The running example")
 
     w.image("running_example", width=6.9)
 
@@ -522,18 +522,21 @@ def build(w):
            "simulation, synthesis, gate-level simulation, comparison and formal "
            "proof.")],
     ], color=TEAL)
-
     w.callout("Part 1 self-check", [
-        [N("1.  What two things does an RTL description state?")],
-        [N("2.  What are the only two kinds of digital logic?")],
-        [N("3.  Name three things the synchronous discipline buys you.")],
-        [N("4.  Explain what happens to a and b in a<=b; b<=a; and in a=b; b=a;")],
-        [N("5.  How many flip-flops did the blocking shift register build, and why?")],
-        [N("6.  Name the four levels of abstraction, highest first.")],
-        [N("7.  Which level produced the smallest netlist, and why?")],
-        [N("8.  Why did dataflow and gate produce identical netlists?")],
-        [N("9.  Why does the lab include a deliberately broken full adder?")],
-        [N("10. In counter4, why is there no else on the enable?")],
+        [N("1.  Name the four kinds of physical object a digital chip is made "
+           "of.")],
+        [N("2.  What does a 1 on a wire physically mean?")],
+        [N("3.  Why does changing a wire from 0 to 1 take time?")],
+        [N("4.  What does a flip-flop do at the clock edge, and between "
+           "edges?")],
+        [N("5.  Name the four phases of one clock period, in order.")],
+        [N("6.  Why are the glitches during settling harmless?")],
+        [N("7.  Which rung of the abstraction ladder is RTL, and what is on "
+           "either side of it?")],
+        [N("8.  What two things does an RTL description state?")],
+        [N("9.  What are the only two kinds of digital logic?")],
+        [N("10. Name three things the synchronous discipline buys you.")],
+        [N("11. In counter4, why is there no else on the enable?")],
     ], color=GREEN, fill="EEF7F1", bar="2A9D5C")
 
     w.page_break()

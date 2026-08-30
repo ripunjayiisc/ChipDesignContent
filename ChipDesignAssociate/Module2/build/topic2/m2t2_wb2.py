@@ -7,9 +7,90 @@ from m2t2_wb1 import B, N, I, M
 
 def build(w):
     # ================================================================ Part 2
-    w.h1("Part 2 · The RTL Design Process and Methodology")
+    w.h1("Part 3 · The RTL Design Process and Methodology")
 
-    w.h2("2.1  The flow")
+    w.h2("3.1  Four levels of abstraction, demonstrated")
+
+    w.image("ladder", width=6.9)
+
+    w.para([N("Verilog can describe hardware at four levels. The lab writes the same "
+              "full adder at all four and simulates them together:")])
+
+    w.code([
+        "// BEHAVIOURAL - you describe the function",
+        "always @* {cout, sum} = a + b + cin;",
+        "",
+        "// DATAFLOW - you describe the Boolean form",
+        "assign sum  = a ^ b ^ cin;",
+        "assign cout = (a & b) | (b & cin) | (a & cin);",
+        "",
+        "// GATE - you name every gate and every wire",
+        "xor x1 (s1, a, b);      xor x2 (sum, s1, cin);",
+        "and a1 (ab, a, b);      and a2 (bc, b, cin);   and a3 (ac, a, cin);",
+        "or  o1 (cout, ab, bc, ac);",
+        "",
+        "// SWITCH - you place individual transistors",
+        "pmos p1 (y, vdd, a);    nmos n1 (y, gnd, a);      // one CMOS inverter"])
+
+    w.para([N("All four were driven with all eight input patterns — exhaustive, since "
+              "a full adder has only three inputs — and compared against plain "
+              "arithmetic. Zero mismatches. "),
+            B("The level of abstraction changed what was written, not what it does.")])
+
+    w.h3("And what a synthesiser makes of each")
+    w.image("ladder_synthesis", width=6.9)
+
+    w.callout("Two results worth stopping on", [
+        [B("The behavioural description produced the SMALLEST circuit "),
+         N("— five cells against six. It left the tool free to choose the Boolean "
+           "form, and the tool found a better one than the textbook expression.")],
+        [B("Dataflow and gate produced the IDENTICAL netlist. "),
+         N("Once you have written the Boolean expression you have already committed "
+           "to the structure; naming the gates adds nothing but typing.")],
+        [N("And the switch-level description was refused outright. Transistor "
+           "primitives are for library cells, not for synthesis.")],
+    ], color=AMBER, fill="FFF7EC", bar="C77514")
+
+    w.callout("The rule this gives you", [
+        [B("Write at the highest level that expresses your intent."),
+         N(" Every level you descend takes a decision away from the tool and gives "
+           "it to you — whether or not you wanted it.")],
+        [N("The tool is better than you are at choosing a gate mix, balancing a logic "
+           "tree, and doing it again consistently at 3 a.m. It is not better than you "
+           "are at deciding how many cycles the job takes, where the registers go, "
+           "what is shared, or what the interface looks like. Give it the first list; "
+           "keep the second.")],
+    ], color=GREEN, fill="EEF7F1", bar="2A9D5C")
+
+    w.h2("3.2  Simulation shows; proof settles")
+
+    w.image("proof_vs_test", width=6.9)
+
+    w.para([N("Eight patterns was exhaustive for a full adder. It stops being possible "
+              "at about thirty inputs, and real designs have thousands — so the lab "
+              "makes the same claim a different way. An "), B("equivalence check"),
+            N(" builds a miter: both designs fed the same inputs, their outputs "
+              "compared, and an assertion that the comparison always holds. A SAT "
+              "solver then tries to find any input pattern that breaks it.")])
+
+    w.code([
+        "$ make prove",
+        "  fa_behav vs fa_dataflow            EQUIVALENT   (proved, 94 SAT variables)",
+        "  fa_behav vs fa_gate                EQUIVALENT   (proved, 94 SAT variables)",
+        "  fa_dataflow vs fa_gate             EQUIVALENT   (proved, 100 SAT variables)",
+        "",
+        "  and the same checker, on a full adder with one term missing:",
+        "  fa_behav vs fa_broken              NOT EQUIVALENT"])
+
+    w.callout("That last line is the important one", [
+        [M("fa_broken.v"), N(" has one term missing from the carry, so it is wrong for "
+           "exactly one input pattern in eight. A random test could easily miss it. "
+           "The solver cannot.")],
+        [B("A checker that cannot fail is not evidence of anything. "),
+         N("You have to watch it catch a real bug before you can trust it on a design "
+           "you cannot check by hand.")],
+    ], color=RED, fill="FDECEF", bar="D6224A")
+    w.h2("3.3  The flow")
 
     w.image("design_flow", width=6.9)
 
@@ -46,7 +127,7 @@ def build(w):
            "methodology rather than a diagram.")],
     ], color=GREEN, fill="EEF7F1", bar="2A9D5C")
 
-    w.h2("2.2  The synthesisable subset")
+    w.h2("3.4  The synthesisable subset")
 
     w.para([N("\"Verilog is not a programming language\" stays a slogan until you "
               "watch a synthesiser refuse to build something. The lab runs eleven "
@@ -75,7 +156,7 @@ def build(w):
            "remembering what someone told you about a different tool version.")],
     ], color=TEAL)
 
-    w.h2("2.3  The inferred latch")
+    w.h2("3.5  The inferred latch")
 
     w.image("latch_inference", width=6.9)
 
@@ -104,7 +185,7 @@ def build(w):
            "block and let later assignments override it.")],
     ], color=RED, fill="FDECEF", bar="D6224A")
 
-    w.h2("2.4  When simulation and silicon disagree")
+    w.h2("3.6  When simulation and silicon disagree")
 
     w.image("sim_synth_mismatch", width=6.9)
 
@@ -141,7 +222,7 @@ def build(w):
          N(" goes further and makes the tool check it for you.")],
     ], color=GREEN, fill="EEF7F1", bar="2A9D5C")
 
-    w.h2("2.5  Seven coding rules, and a tool that checks them")
+    w.h2("3.7  Seven coding rules, and a tool that checks them")
 
     w.image("lint_rules", width=6.9)
 
@@ -173,7 +254,7 @@ def build(w):
               "built — and that class of bug survives every test you write.",
               {"b": True})])
 
-    w.h2("2.6  Micro-architecture: the decisions RTL cannot make for you")
+    w.h2("3.8  Micro-architecture: the decisions RTL cannot make for you")
 
     w.image("partitioning", width=6.9)
 
@@ -184,7 +265,7 @@ def build(w):
         [B("Make these decisions on paper, before the first line of RTL.")],
     ], color=AMBER, fill="FFF7EC", bar="C77514")
 
-    w.h2("2.7  Writing RTL someone else can use")
+    w.h2("3.9  Writing RTL someone else can use")
 
     w.image("reuse", width=6.9)
 
@@ -195,7 +276,7 @@ def build(w):
               "you anything? If the answer needs a conversation, it is not reusable "
               "yet.")])
 
-    w.h2("2.8  Coding style: one function, three ways")
+    w.h2("3.10  Coding style: one function, three ways")
 
     w.image("mux_styles", width=6.9)
 
@@ -234,7 +315,7 @@ def build(w):
               "of knowledge in this field, and it is cheap to replace with a "
               "measurement.")])
 
-    w.callout("Part 2 self-check", [
+    w.callout("Part 3 self-check", [
         [N("1.  Name the first four stages of the flow, and say what evidence each "
            "produces.")],
         [N("2.  Why lint before simulating rather than after?")],
@@ -250,10 +331,15 @@ def build(w):
 
 
 def build_hdl(w):
-    """Part 4 - HDLs. Called after the patterns part, which is Part 3."""
-    w.h1("Part 4 · Hardware Description Languages")
+    """Part 2 - the language. Called immediately after Part 1."""
+    w.h1("Part 2 · The Language You Say It In")
 
-    w.h2("4.1  An HDL is not a programming language")
+    w.para([N("Part 1 was about the hardware: what is on the chip, what a "
+              "register does, and what happens between two clock edges. This "
+              "part is about how you write that down - and the first thing to "
+              "unlearn is that this is programming.")])
+
+    w.h2("2.1  An HDL is not a programming language")
 
     w.image("what_is_hdl", width=6.9)
 
@@ -265,7 +351,7 @@ def build_hdl(w):
               "construct can be perfectly legal Verilog and still have no hardware "
               "meaning at all — as the subset table in Part 2 measured.")])
 
-    w.h2("4.2  Everything happens at once")
+    w.h2("2.2  Everything happens at once")
 
     w.image("concurrency", width=6.9)
 
@@ -278,7 +364,7 @@ def build_hdl(w):
               "That is exactly why mixing "), M("="), N(" and "), M("<="),
             N(" in one block is confusing enough to be a lint rule.")])
 
-    w.h2("4.3  The anatomy of a module")
+    w.h2("2.3  The anatomy of a module")
 
     w.image("module_anatomy", width=6.9)
 
@@ -292,7 +378,81 @@ def build_hdl(w):
          M("reg"), N(" to "), M("logic"), N(" precisely to end this confusion.")],
     ], color=AMBER, fill="FFF7EC", bar="C77514")
 
-    w.h2("4.4  How a simulator runs an HDL")
+    w.h2("2.4  Blocking and non-blocking assignment")
+
+    w.image("nonblocking", width=6.9)
+
+    w.h3("The swap, worked through")
+    w.code([
+        "// NON-BLOCKING - inside always @(posedge clk)",
+        "//   Step 1: read every right-hand side, using the OLD values.",
+        "//   Step 2: update every left-hand side, all at the same instant.",
+        "",
+        "        a <= b;        //  reads old b",
+        "        b <= a;        //  reads old a",
+        "",
+        "        a and b are SWAPPED. This is what a hardware register does.",
+        "",
+        "// BLOCKING - inside always @*",
+        "//   Each statement finishes before the next one starts.",
+        "",
+        "        a = b;         //  a is now b",
+        "        b = a;         //  a is already b, so this does nothing",
+        "",
+        "        BOTH end up holding b. This is what software does."])
+
+    w.callout("Why the rule is absolute rather than stylistic", [
+        [N("Two clocked blocks using blocking assignments can see each other's "
+           "half-updated values, and which one wins depends on the order the "
+           "simulator happens to evaluate them in — an order the language standard "
+           "deliberately does not fix.")],
+        [B("Non-blocking assignment exists precisely to make that race impossible. "),
+         N("It is not a convention; it is the mechanism.")],
+    ], color=NAVY, bar="0E2A47")
+
+    w.para([N("The mirror-image rule matters too. Non-blocking assignment inside a "
+              "combinational block is legal, and it makes the block behave like a "
+              "register in simulation while synthesis builds plain logic — so the "
+              "simulation and the silicon disagree. Rules L001 and L002 of the linter "
+              "in this lab catch both directions.")])
+
+    w.h3("And what each one actually builds")
+
+    w.image("blocking_measured", width=6.9)
+
+    w.para([N("The argument above is about semantics. Here is the same argument as a "
+              "measurement. Two files, identical apart from one character per line:")])
+
+    w.code([
+        "// shift_nb.v - the intended 3-stage shift register",
+        "always @(posedge clk) begin",
+        "    q[0] <= din;   q[1] <= q[0];   q[2] <= q[1];",
+        "end",
+        "",
+        "// shift_bl.v - the same three lines with =",
+        "always @(posedge clk) begin",
+        "    q[0] = din;    q[1] = q[0];    q[2] = q[1];",
+        "end"])
+
+    w.code([
+        "$ make pitfalls",
+        "  non-blocking version : 0 wrong cycles",
+        "  blocking version     : 6 wrong cycles",
+        "",
+        "  shift_nb (non-blocking)         3 cells     3 flip-flops",
+        "  shift_bl (blocking)             1 cells     1 flip-flops"])
+
+    w.callout("Three flip-flops against one", [
+        [N("The blocking version did not build a slower shift register, or a buggy "
+           "one. It built a "), B("different circuit"), N(" — din races all the way "
+           "to q[2] in a single clock cycle, because q[0] already holds the new "
+           "value when line two reads it.")],
+        [N("It compiled. It simulated. It synthesised. No tool issued a single "
+           "warning, because nothing illegal was written. This is exactly the class "
+           "of bug a methodology rule exists to prevent, and rule L001 catches it in "
+           "about a millisecond.")],
+    ], color=RED, fill="FDECEF", bar="D6224A")
+    w.h2("2.5  How a simulator runs an HDL")
 
     w.image("event_simulation", width=6.9)
 
@@ -312,7 +472,7 @@ def build_hdl(w):
            "cannot affect the result.")],
     ], color=RED, fill="FDECEF", bar="D6224A")
 
-    w.h2("4.5  Verilog and VHDL")
+    w.h2("2.6  Verilog and VHDL")
 
     w.image("verilog_vhdl", width=6.9)
 
@@ -361,7 +521,7 @@ def build_hdl(w):
               "and costs more keystrokes; Verilog is faster to write and trusts you "
               "more than it should.")])
 
-    w.h2("4.6  Reference cards, and what a testbench is made of")
+    w.h2("2.7  Reference cards, and what a testbench is made of")
 
     w.para([N("The two pages that follow are the whole of the language you need for "
               "this topic — not the whole of Verilog or VHDL, which are both far "
@@ -403,11 +563,11 @@ def build_hdl(w):
            "about ten cycles, and it never runs twice.")],
     ], color=RED, fill="FDECEF", bar="D6224A")
 
-    w.h2("4.7  Which one should you learn?")
+    w.h2("2.8  Which one should you learn?")
 
     w.image("hdl_choose", width=6.9)
 
-    w.callout("Part 4 self-check", [
+    w.callout("Part 2 self-check", [
         [N("1.  Give the biggest single difference between an HDL and a programming "
            "language.")],
         [N("2.  Does the order of assign statements matter? Why not?")],

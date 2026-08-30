@@ -6,15 +6,15 @@ from m2t2_wb1 import B, N, I, M
 
 
 def build(w):
-    w.h1("Part 3 · The Patterns Every Block Is Built From")
+    w.h1("Part 4 · The Patterns Every Block Is Built From")
 
-    w.para([N("Parts 1 and 2 were about what RTL is and what you are allowed to "
-              "write. This part is about what real designs are actually made of. "
+    w.para([N("Parts 1 to 3 were about the hardware, the notation and the "
+              "process. This part is about what real designs are actually made of. "
               "Three structures account for almost all synthesisable RTL, and once "
               "you can recognise them most designs stop looking unfamiliar.")])
 
     # ================================================ datapath + controller
-    w.h2("3.1  Datapath and controller")
+    w.h2("4.1  Datapath and controller")
 
     w.image("datapath_controller", width=6.9)
 
@@ -115,7 +115,7 @@ def build(w):
             N(" means the controller never changes at all.")])
 
     # ============================================================== the FSM
-    w.h2("3.2  The finite state machine")
+    w.h2("4.2  The finite state machine")
 
     w.image("fsm_pattern", width=6.9)
 
@@ -199,7 +199,7 @@ def build(w):
               "over a project that is the same thing.")])
 
     # ======================================================== Moore / Mealy
-    w.h2("3.3  Moore and Mealy")
+    w.h2("4.3  Moore and Mealy")
 
     w.image("moore_mealy", width=6.9)
 
@@ -273,7 +273,7 @@ def build(w):
               "not a coding one.")])
 
     # ============================================================ encoding
-    w.h2("3.4  State encoding")
+    w.h2("4.4  State encoding")
 
     w.image("state_encoding", width=6.9)
 
@@ -309,7 +309,7 @@ def build(w):
     ], color=RED, fill="FDECEF", bar="D6224A")
 
     # =============================================== a controller + a timer
-    w.h2("3.5  A controller with a timer, and how to check it")
+    w.h2("4.5  A controller with a timer, and how to check it")
 
     w.image("traffic_states", width=6.9)
 
@@ -362,7 +362,7 @@ def build(w):
             N(" does with a SAT solver.")])
 
     # ============================================================== reuse
-    w.h2("3.6  From a module to an IP")
+    w.h2("4.6  From a module to an IP")
 
     w.image("hierarchy_generate", width=6.9)
 
@@ -420,7 +420,7 @@ def build(w):
            "That is all “hierarchy” means: a wire between two instances.")],
     ], color=TEAL)
 
-    w.callout("Part 3 self-check", [
+    w.callout("Part 4 self-check", [
         [N("1.  What are the two halves of almost every block, and what crosses "
            "between them?")],
         [N("2.  Why keep the sample counter in the datapath rather than the "

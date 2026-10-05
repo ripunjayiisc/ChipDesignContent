@@ -1,0 +1,10 @@
+# The same design, mapped for an FPGA instead: logic becomes 4-input
+# look-up tables, because that is what the silicon already contains.
+read_verilog rtl/counter4.v
+hierarchy -top counter4
+proc; opt
+techmap; opt
+abc -lut 4
+opt_clean
+write_verilog -noattr out/counter4_lut4.v
+stat

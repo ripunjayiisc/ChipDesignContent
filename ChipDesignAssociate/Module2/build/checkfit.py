@@ -42,10 +42,14 @@ for i, s in enumerate(list(p.slides), 1):
                 if not t:
                     total += sz * EMU_PT * 1.30
                     continue
-                cw = sz * EMU_PT * (0.60 if mono else 0.475)
+                # Consolas is narrower than the old 0.60 em estimate, and a
+                # code block is set at 1.12 line spacing rather than the 1.34
+                # a prose card uses. Modelling both the same way made every
+                # code block look like an overflow.
+                cw = sz * EMU_PT * (0.55 if mono else 0.475)
                 cpl = max(1, int(sh.width / cw))
                 lines = max(1, -(-len(t) // cpl))
-                total += lines * sz * EMU_PT * 1.34
+                total += lines * sz * EMU_PT * (1.12 if mono else 1.34)
             avail = cb - sh.top - 60000
             if total > avail:
                 issues.append((i, "text overflows card", sh.top, int(total), int(avail)))

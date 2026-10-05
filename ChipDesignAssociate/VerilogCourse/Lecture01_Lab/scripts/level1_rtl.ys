@@ -1,0 +1,9 @@
+# Level 1 -> Level 2.  Read the BEHAVIOURAL description and turn it into an
+# RTL netlist: named blocks (a register, an adder, a multiplexer) wired
+# together.  Notice that the OUTPUT is Verilog too.
+read_verilog rtl/counter4.v
+hierarchy -top counter4
+proc
+opt
+write_verilog -noattr out/counter4_rtl.v
+stat
